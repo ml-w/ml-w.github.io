@@ -340,7 +340,7 @@ window.Quarto = {
 <section id="dicom" class="level2">
 <h2 class="anchored" data-anchor-id="dicom">DICOM</h2>
 <p>Generally DICOM can be seen as a series of 2D images with extra information stored in headers. However, an image can be sliced along different normals, for example sagital, coronal or axial. These three direction are not the only direction that a DICOM series can take on, in fact, a DICOM series can be sliced along any directions. The slice direction is decided by the&nbsp; “<strong>Image Orientation (Patient) (0020,0037)</strong>” DICOM tag, which specify the reference frame. The “<strong>Image Orientation(Patient)“</strong> is a 6-element tuple consist of two vectors which <em>describes the axis of the direction for row and column of that particular slice.</em> For example, if your slices are Axial slice, then the two vectors defines sagital and coronal directions.</p>
-<p>If the tag is <strong>“a”</strong>, then the cross product of the two vectors gives the third colume of the rotational matrix, i.e:</p>
+<p>If the tag is <strong>“a</strong>“, then the cross product of the two vectors gives the third colume of the rotational matrix, i.e:</p>
 <p>If the corresponding axis vectors will be</p>
 <p><span class="math display">\[
 \begin{align}
@@ -415,7 +415,7 @@ a^2 + b^2 - c^2 - d^2&amp;2bc - 2ad&amp;2bd+2ac&amp;q_x\\
 </section>
 <section id="code-example-vtk-python" class="level3">
 <h3 class="anchored" data-anchor-id="code-example-vtk-python">Code Example (VTK &amp; Python)</h3>
-<div id="b65cd260" class="cell" data-execution_count="1">
+<div id="812276b6" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> vtk</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
@@ -474,7 +474,7 @@ a^2 + b^2 - c^2 - d^2&amp;2bc - 2ad&amp;2bd+2ac&amp;q_x\\
 </section>
 <section id="fix" class="level1">
 <h1>Fix</h1>
-<div id="cb1b17c6" class="cell" data-execution_count="2">
+<div id="837f28fa" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Spacing</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> image.GetSpacing()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> np.array([s[<span class="dv">0</span>], s[<span class="dv">1</span>], s[<span class="dv">2</span>], <span class="dv">1</span>])</span>
@@ -549,8 +549,20 @@ a^2 + b^2 - c^2 - d^2&amp;2bc - 2ad&amp;2bd+2ac&amp;q_x\\
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    0 1 0 0 </span>
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    0 0 0 1 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now if you round them up, you can see how this is corrected. However, you might also notice the qFrom matrix and sForm matrix gives you different results.</p>
+<p>Now if you round them up, you can see how this is corrected, but the x-axis and y-axis are now inverted. THis is because vtk and itk has inherently different orientation. While ITK defaults image to RAI orientation (Medical image convention), VTK defaults image to LPI (Computer graphics convention). Specifically, if you look at MRI images, the structures one the right actually belongs to the left side of the patient, as if the patient is standing facing the viewer. Knowing these subtle different would help to figure why the orientation is always messed up if you use <code>VTK</code> and <code>ITK</code> interchangibly.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/paste-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+<figcaption>Fig. 1 ITK-snap display of the CT of a patient. Data collected and releasted to the public domain by Aerts et al [1].</figcaption>
+</figure>
+</div>
 </section>
+</section>
+<section id="reference" class="level1">
+<h1>Reference</h1>
+<ol type="1">
+<li>Aerts, H. J., Velazquez, E. R., Leijenaar, R. T., Parmar, C., Grossmann, P., Carvalho, S., Bussink, J., Monshouwer, R., Haibe-Kains, B., Rietveld, D., Hoebers, F., Rietbergen, M. M., Leemans, C. R., Dekker, A., Quackenbush, J., Gillies, R. J., &amp; Lambin, P. (2014). Decoding tumour phenotype by noninvasive imaging using a quantitative radiomics approach [Article]. Nat Commun, 5, 4006, Article 4006. <a href="https://doi.org/10.1038/ncomms5006" class="uri">https://doi.org/10.1038/ncomms5006</a></li>
+</ol>
 </section>
 </div>
 
