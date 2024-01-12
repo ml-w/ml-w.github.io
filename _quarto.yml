@@ -16,8 +16,8 @@ website:
 format:
   html:
     theme: 
-      light: [quartz, styles.scss, light-styles.scss]
       dark: [quartz, styles.scss, dark-styles.scss]
+      light: [quartz, styles.scss, light-styles.scss]
     css: 
       styles.css
     header-includes: |
