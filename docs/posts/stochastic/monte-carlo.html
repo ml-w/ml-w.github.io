@@ -105,6 +105,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS_CHTML-full" integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous" referrerpolicy="no-referrer">
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\\[','\\]']],
+            processEscapes: true,
+            processEnvironments: true,
+        }
+    });
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pseudocode@2.4.1/build/pseudocode.min.css"> 
+<script src="https://cdn.jsdelivr.net/npm/pseudocode@2.4.1/build/pseudocode.min.js">
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -253,8 +268,8 @@ Caution
 <p>Examples:</p>
 <p><span class="math display">\[\displaystyle&nbsp;&nbsp;\text{Particle A: } [X=1, Y=2] \\ \\ \text{Particle B: } [X=3, Y=1] \\ \\ \text{where } X, Y \in&nbsp; {1, 2, 3}\]</span></p>
 </section>
-<section id="mcmc" class="level2">
-<h2 class="anchored" data-anchor-id="mcmc">MCMC</h2>
+<section id="markov-chain-monte-carlo-mcmc" class="level2">
+<h2 class="anchored" data-anchor-id="markov-chain-monte-carlo-mcmc">Markov Chain Monte Carlo (MCMC)</h2>
 <blockquote class="blockquote">
 <p>MCMC refers to methods for randomly sample particles from a joint distribution with a Markov Chain.</p>
 </blockquote>
@@ -265,48 +280,26 @@ Caution
 <p>Particle Filtering is also termed Sequential Monte Carlo. It refers to the process of repeatedly sampling, cast votes after each iteration based on sampled particles and modify the next sampling based on the votes in order to obtain the probability distribution of some un-observable states.</p>
 </blockquote>
 <p>Formally, let <span class="math inline">\(x\)</span> be the unobservable states and <span class="math inline">\(y\)</span> be the observable states related to <span class="math inline">\(x\)</span>. Suppose we receive observations of <span class="math inline">\(y\)</span> at each time step <span class="math inline">\(k\)</span>, we can write the probability based on a Markov Chain:</p>
-<p><span class="math display">\[\displaystyle X_k\|(X\_{k-1} =x\_{k-1}) \propto p(x_k\|x\_{k-1})\]</span></p>
-<p><span class="math display">\[\displaystyle Y_k\|(X\_{k} =x\_{k}) \propto p(y_k\|x\_{k})\]</span></p>
+<p><span class="math display">\[\displaystyle X_k|(X_{k-1} =x_{k-1}) \propto p(x_k|x_{k-1})\]</span></p>
+<p><span class="math display">\[\displaystyle Y_k|(X_{k} =x_{k}) \propto p(y_k|x_{k})\]</span></p>
 <p>Based on Chapman-Kolmogorov Equation and Bayes Theorem, the conditional probability distribution of latent states <span class="math inline">\(x\)</span> based on priori knowledge <span class="math inline">\(y\)</span> is:</p>
-<p><span class="math display">\[\displaystyle p(x_k\|y\_{1:k}) \propto p(y_k\|x_k)\int_k p(x_k\|x\_{k-1})p(x\_{k-1}\|Y\_{1:K-1})\]</span></p>
+<p><span class="math display">\[\displaystyle p(x_k|y_{1:k}) \propto p(y_k|x_k)\int_k p(x_k|x_{k-1})p(x_{k-1}|Y_{1:K-1})\]</span></p>
 </section>
 </section>
 <section id="mcmc-methods" class="level1">
 <h1>MCMC Methods</h1>
 <section id="gibbs-sampling" class="level2">
 <h2 class="anchored" data-anchor-id="gibbs-sampling">Gibbs Sampling</h2>
-<div class="psuedo-code">
-<pre class="{pseudocode}"><code>#| label: alg-quicksort
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "//"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
+<pre class="pseudocode"><code>% This quicksort algorithm is extracted from Chapter 7, Introduction to Algorithms (3rd edition)
 \begin{algorithm}
-\caption{Quicksort}
+\caption{Gibbs Sampling}
 \begin{algorithmic}
-\Procedure{Quicksort}{$A, p, r$}
-  \If{$p &lt; r$}
-    \State $q = $ \Call{Partition}{$A, p, r$}
-    \State \Call{Quicksort}{$A, p, q - 1$}
-    \State \Call{Quicksort}{$A, q + 1, r$}
-  \EndIf
-\EndProcedure
-\Procedure{Partition}{$A, p, r$}
-  \State $x = A[r]$
-  \State $i = p - 1$
-  \For{$j = p, \dots, r - 1$}
-    \If{$A[j] &lt; x$}
-      \State $i = i + 1$
-      \State exchange
-      $A[i]$ with     $A[j]$
-    \EndIf
-    \State exchange $A[i]$ with $A[r]$
-  \EndFor
-\EndProcedure
+\STATE \textbf{Unknown}: Joint distribution $\boldsymbol{X} = P(X_1, X_2, \dots, X_n)$
+\STATE \textbf{Known}: Conditional Probability $P(X_i|X_{j\neq i})$
+\STATE \textbf{Purpose}: Obtain an estimation of joint distribution $\boldsymbol{X}$
+
+\PROCEDURE{GibbsSampling}{$A, p, r$}    
+\ENDPROCEDURE
 \end{algorithmic}
 \end{algorithm}</code></pre>
 <p><strong>Unknown:</strong> Joint distribution $P(X_1, X_2, , X_n) $</p>
@@ -318,11 +311,10 @@ Caution
 <li><p>Compute distribution by randomly fixing&nbsp; “others” variable $P(X_j|X_i, _{others}) $ for some <span class="math inline">\(j \neq i\)</span></p></li>
 <li><p>Sample from distribution to get a realization of $X_j $, then update the conditional probability $P(X_i|X_j, _{others}) $ correspondingly,</p></li>
 <li><p>Sample the target</p></li>
-<li><p>Do step 2 to step 3 repeatedly for all $j i $ for <em>k</em> iterations.</p></li>
+<li><p>Do step 2 to step 3 repeatedly for all $j [1, n] \neq i $ for <em>k</em> iterations.</p></li>
 </ol>
-</div>
 <p>An implementation is given below:</p>
-<div id="aaec5d37" class="cell" data-execution_count="1">
+<div id="1b6ba66c" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.integrate <span class="im">as</span> integrate </span>
@@ -422,6 +414,10 @@ Caution
 <blockquote class="blockquote">
 <p>http://cs.stanford.edu/~ppasupat/a9online/1300.html</p>
 </blockquote>
+/*-- This needs to be here to render the pseudocode --*/
+<script>
+    pseudocode.renderElement(document.getElementsByClassName("pseudocode")[0]);
+</script>
 
 
 </section>
