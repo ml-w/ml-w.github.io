@@ -1,0 +1,29 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Computer vision, biostatistics, and AI in Radiology"
+  favicon: favicon.png
+  navbar:
+    right:
+      - index.qmd
+      - about.qmd
+      - icon: github
+        href: https://github.com/ml-w
+      - icon: twitter
+        href: https://twitter.com
+format:
+  html:
+    theme: 
+      light: [quartz, styles.scss, light-styles.scss]
+      dark: [quartz, styles.scss, dark-styles.scss]
+    css: 
+      styles.css
+    header-includes: |
+      <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+editor: visual
+
+execute:
+  freeze: auto

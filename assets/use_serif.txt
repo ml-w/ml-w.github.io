@@ -1,0 +1,11 @@
+<style>
+  /* Apply the 'Roboto' font to the entire post */
+  .quarto-container {
+    font-family: 'Georgia', sans-serif;
+  }
+  
+  /* Or if you want to apply to specific elements, e.g., headers 
+  h1, h2, h3 {
+    font-family: 'Georgia', sans-serif;
+  } */
+</style>

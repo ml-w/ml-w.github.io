@@ -1,0 +1,261 @@
+[
+  {
+    "objectID": "posts/stochastic/simple-random-walk.html",
+    "href": "posts/stochastic/simple-random-walk.html",
+    "title": "Stochastic - Python Example of a Random Walk Process",
+    "section": "",
+    "text": "Simple random walk is the first step towards learning stochastic process. Essentially, we model a particle (of desired dimension) walking randomly as time (steps) goes by. Both the stride and the direction is random, but it follows a certain distribution.\n\n\nFirst, let us define the problem formally.\n\nTo implement a 1-D simulation of random walk \\(S(t)\\) within period \\(t \\in T = \\{0, 1, 2, \\dots, N\\}\\) in sample space \\(\\omega \\in \\mathbb{W}\\), with discrete stochastic process \\(X_T = \\{X_1, X_2, \\dots, X_n \\}\\) called steps of the random&gt; walk with the constrain \\(\\text{min} \\leq X(t) \\leq \\text{max}\\).\n\n\n\n\nThe random walk can be formally defined as follow:\n\\[S(t) = S_0 + \\sum_{t=1}^{n} X_t\\]\n\\(S_0\\) represents the initial value or start point of the random walk. Also, select that each elements of \\(X_T\\) can take on integer values between -5 and 5. Implementation\nThis simulation is equivalent to plotting \\(S(t)\\) against \\(t\\).\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Generate random numbers within the range -5 to 5\n# Note that randint(-5, high=6) generate range -5 to 5\nN =5100 ; MIN_STEP = -5; MAX_STEP = 6; S_0 = 0; # Define parameters of the simulation\nX_T = np.random.randint(MIN_STEP , high=MAX_STEP , size=N+1) # Generate the discrete stochastic process\nt = np.linspace(0, N, N+1) # Time domain\nS = [S_0 + np.sum(X_T[0:i]) for i in range(N+1)] # Calculate each S(t) of the random walk\nplt.plot(t, S, '-') # Plot\n\n\n\n\n\n\n\n\n\n\n\n\nHere’s an example of a random flight of 1000 steps sampled from a process similar to above, but in 2-dimension.\n\n\n\n\n\n\nIn this example, we select that each elements \\(X(t) \\in X_T, t \\in T = \\{0, 1, 2, \\dots, n\\}\\) to follows \\(-5 \\leq X(t) \\leq 5 \\text{ } \\forall \\text{ } t \\in T\\). It is, however, possible to introduce various other constrain to the process w.r.t. the application of your application. By modeling this distribution based on a known particle’s path, one might be able to estimate its future movement. An even more sophisticated method to sample the path is to decide the distribution again based on the location of the particle and its surrounding environment. In real life, physical phenomenon, such as Brownian motion, can also be described by random walk.\n\n\n\nIt is also worthwhile to note that both \\(S\\) and \\(X_T=\\{T_1, T_2, \\dots, T_n\\}\\) fulfills the definition of stochastic process with the state space being different. In otherwords, stochastic process is commutative in nature."
+  },
+  {
+    "objectID": "posts/stochastic/simple-random-walk.html#defining-the-problem",
+    "href": "posts/stochastic/simple-random-walk.html#defining-the-problem",
+    "title": "Stochastic - Python Example of a Random Walk Process",
+    "section": "",
+    "text": "First, let us define the problem formally.\n\nTo implement a 1-D simulation of random walk \\(S(t)\\) within period \\(t \\in T = \\{0, 1, 2, \\dots, N\\}\\) in sample space \\(\\omega \\in \\mathbb{W}\\), with discrete stochastic process \\(X_T = \\{X_1, X_2, \\dots, X_n \\}\\) called steps of the random&gt; walk with the constrain \\(\\text{min} \\leq X(t) \\leq \\text{max}\\)."
+  },
+  {
+    "objectID": "posts/stochastic/simple-random-walk.html#formulation",
+    "href": "posts/stochastic/simple-random-walk.html#formulation",
+    "title": "Stochastic - Python Example of a Random Walk Process",
+    "section": "",
+    "text": "The random walk can be formally defined as follow:\n\\[S(t) = S_0 + \\sum_{t=1}^{n} X_t\\]\n\\(S_0\\) represents the initial value or start point of the random walk. Also, select that each elements of \\(X_T\\) can take on integer values between -5 and 5. Implementation\nThis simulation is equivalent to plotting \\(S(t)\\) against \\(t\\).\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Generate random numbers within the range -5 to 5\n# Note that randint(-5, high=6) generate range -5 to 5\nN =5100 ; MIN_STEP = -5; MAX_STEP = 6; S_0 = 0; # Define parameters of the simulation\nX_T = np.random.randint(MIN_STEP , high=MAX_STEP , size=N+1) # Generate the discrete stochastic process\nt = np.linspace(0, N, N+1) # Time domain\nS = [S_0 + np.sum(X_T[0:i]) for i in range(N+1)] # Calculate each S(t) of the random walk\nplt.plot(t, S, '-') # Plot"
+  },
+  {
+    "objectID": "posts/stochastic/simple-random-walk.html#applications",
+    "href": "posts/stochastic/simple-random-walk.html#applications",
+    "title": "Stochastic - Python Example of a Random Walk Process",
+    "section": "",
+    "text": "In this example, we select that each elements \\(X(t) \\in X_T, t \\in T = \\{0, 1, 2, \\dots, n\\}\\) to follows \\(-5 \\leq X(t) \\leq 5 \\text{ } \\forall \\text{ } t \\in T\\). It is, however, possible to introduce various other constrain to the process w.r.t. the application of your application. By modeling this distribution based on a known particle’s path, one might be able to estimate its future movement. An even more sophisticated method to sample the path is to decide the distribution again based on the location of the particle and its surrounding environment. In real life, physical phenomenon, such as Brownian motion, can also be described by random walk."
+  },
+  {
+    "objectID": "posts/stochastic/simple-random-walk.html#nature-of-s-and-x_t",
+    "href": "posts/stochastic/simple-random-walk.html#nature-of-s-and-x_t",
+    "title": "Stochastic - Python Example of a Random Walk Process",
+    "section": "",
+    "text": "It is also worthwhile to note that both \\(S\\) and \\(X_T=\\{T_1, T_2, \\dots, T_n\\}\\) fulfills the definition of stochastic process with the state space being different. In otherwords, stochastic process is commutative in nature."
+  },
+  {
+    "objectID": "posts/stochastic/incremental-process.html",
+    "href": "posts/stochastic/incremental-process.html",
+    "title": "Stochastic - Python Example of a Random Walk Process",
+    "section": "",
+    "text": "An independent incremental process is a type of stochastic process where the increments (or differences) between values at different times are independent random variables. This means that the value of an increment at one time point does not influence the value of another increment at a different time point. In other words, what happens from one step to the next has no memory of what has happened before.\n\n\n\nFor a stochastic process \\(X_T\\) with sample space \\(t_1, t_2, \\dots, t_n \\in T\\) such that \\(t_1 &lt; t_2 &lt; \\dots &lt; t_n\\) then\n\\[\\displaystyle X_{t2} - X_{t1} , X_{t3} - X_{t2} , \\dots , X_{tn} - X_{tn-1}\\]\nare independent.\n\n\n\n\n\nA stationary incremental process, on the other hand, is a stochastic process where the statistical properties of the increments are time-invariant. This means that the probability distribution of the increments does not change over time. For instance, if you take any two increments of the same length at different points in the process, they should have the same probability distribution.\n\n\n\nFor an independent incremental process \\(X_T\\), it is said to be stationary if it satisfy:\n\\[\\displaystyle \\{X_{i + h} - X_{i-1 + h}\\} = \\{X_{i} - X_{i-1}\\};\\forall i, h\\in\\mathbb{Z}^+\\]\nMore formally, \\(\\forall t, s, h \\in \\mathbb{Z}^+\\), where \\(0 \\leq s &lt; t\\), the following holds:\n\\[F_{X_{t+h} - X_{s+h}}(x) = F_{X_t - X_s}(x)\\]\nwhere \\(F_{X_t - X_s}(x)\\) is the cumulative distribution function of the increment \\(X_{t} - X(s)\\).\n\n\n\n\n\n\n\nThe simple random walk process covered here is a classical example of incremental process. Whether or not it is independent and stationary is dictated by whether each steps are independent of each other, and if the distribution from which the steps are sampled is identical for every step.\n\n\n\n\n\n\nA process can be a stationary incremental process without being an independent incremental process. Consider a moving average (MA) process in time series analysis, which is often used to model time series data. In an MA process, the current value is derived from a combination of current and past random shocks (errors), with the random shocks being independent and identically distributed. The increments (changes) in the process could have a constant variance, making them stationary, but they are not independent because the value at time \\(t\\) is directly influenced by the random shock at time \\(t-1\\).\nLet \\(X(t)\\) be the MA and \\(\\epsilon(t)\\) be the shock at time \\(t\\), both being random variables and \\(\\epsilon(t) \\in \\mathscr{N}(0, 1)\\),\n\\[ X(t) = \\epsilon(t) + \\theta \\cdot \\epsilon(t-1) \\]\nEvidently \\(X(t)\\) depends on \\(t\\) because it has memory of \\(X(t-1)\\).\nHere’s a simple example of an MA(1) process, which is a moving average process of order 1:\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nnp.random.seed(42)\nn = 100  # number of points\nerrors = np.random.normal(0, 1, n)  # independent, identically distributed errors\ntheta = 0.5  # parameter of the MA(1) process\n\n# MA(1) process\nY = np.empty(n)\nY[0] = errors[0]\nfor t in range(1, n):\n    Y[t] = errors[t] + theta * errors[t-1]  # dependent increments\n\n# Y[t] - Y[t-1] are the increments and are stationary but not independent because Y[t] depends on errors[t-1]\n\nfig, ax = plt.subplots(1, 1, figsize=(7, 5))\nax.plot(Y)\nplt.show()\n\n\n\n\n\n\n\n\nIn this MA(1) model, the increments are stationary because the distribution of Y[t] - Y[t-1] does not change over time. Each increment has a mean of zero and a constant variance (which can be calculated based on the variance of the errors and the parameter theta). However, the increments are not independent because each Y[t] is dependent on the error term at t-1 (errors[t-1]).\nYou can see how the path tends to return to the average (\\(\\mu = 0\\)) if it has deviate from it.\nThis demonstrates that a process can have stationary increments with a consistent statistical distribution while still exhibiting dependence between those increments."
+  },
+  {
+    "objectID": "posts/stochastic/incremental-process.html#independent-incremental-process",
+    "href": "posts/stochastic/incremental-process.html#independent-incremental-process",
+    "title": "Stochastic - Python Example of a Random Walk Process",
+    "section": "",
+    "text": "An independent incremental process is a type of stochastic process where the increments (or differences) between values at different times are independent random variables. This means that the value of an increment at one time point does not influence the value of another increment at a different time point. In other words, what happens from one step to the next has no memory of what has happened before.\n\n\n\nFor a stochastic process \\(X_T\\) with sample space \\(t_1, t_2, \\dots, t_n \\in T\\) such that \\(t_1 &lt; t_2 &lt; \\dots &lt; t_n\\) then\n\\[\\displaystyle X_{t2} - X_{t1} , X_{t3} - X_{t2} , \\dots , X_{tn} - X_{tn-1}\\]\nare independent."
+  },
+  {
+    "objectID": "posts/stochastic/incremental-process.html#stationary-independent-incremental-process",
+    "href": "posts/stochastic/incremental-process.html#stationary-independent-incremental-process",
+    "title": "Stochastic - Python Example of a Random Walk Process",
+    "section": "",
+    "text": "A stationary incremental process, on the other hand, is a stochastic process where the statistical properties of the increments are time-invariant. This means that the probability distribution of the increments does not change over time. For instance, if you take any two increments of the same length at different points in the process, they should have the same probability distribution.\n\n\n\nFor an independent incremental process \\(X_T\\), it is said to be stationary if it satisfy:\n\\[\\displaystyle \\{X_{i + h} - X_{i-1 + h}\\} = \\{X_{i} - X_{i-1}\\};\\forall i, h\\in\\mathbb{Z}^+\\]\nMore formally, \\(\\forall t, s, h \\in \\mathbb{Z}^+\\), where \\(0 \\leq s &lt; t\\), the following holds:\n\\[F_{X_{t+h} - X_{s+h}}(x) = F_{X_t - X_s}(x)\\]\nwhere \\(F_{X_t - X_s}(x)\\) is the cumulative distribution function of the increment \\(X_{t} - X(s)\\)."
+  },
+  {
+    "objectID": "posts/stochastic/incremental-process.html#random-walk",
+    "href": "posts/stochastic/incremental-process.html#random-walk",
+    "title": "Stochastic - Python Example of a Random Walk Process",
+    "section": "",
+    "text": "The simple random walk process covered here is a classical example of incremental process. Whether or not it is independent and stationary is dictated by whether each steps are independent of each other, and if the distribution from which the steps are sampled is identical for every step."
+  },
+  {
+    "objectID": "posts/IT/headless-server.html",
+    "href": "posts/IT/headless-server.html",
+    "title": "Setting up a headless server",
+    "section": "",
+    "text": "This post is compiled from a list of steps which makes it possible to set up a headless server with nvidia GPU driver and glx support. The system is tested on Ubuntu 16.04 with nvidia-375.2 driver installed manually. Setting up XRDP"
+  },
+  {
+    "objectID": "posts/IT/headless-server.html#prerequisite",
+    "href": "posts/IT/headless-server.html#prerequisite",
+    "title": "Setting up a headless server",
+    "section": "Prerequisite",
+    "text": "Prerequisite\n\nlibtool\nautoconf\nautomake\ncmake-curses-gui"
+  },
+  {
+    "objectID": "posts/IT/headless-server.html#installing-libjpeg-turbo8",
+    "href": "posts/IT/headless-server.html#installing-libjpeg-turbo8",
+    "title": "Setting up a headless server",
+    "section": "Installing libjpeg-turbo8",
+    "text": "Installing libjpeg-turbo8\nClone source from Github then cd into directory.\nautoreconf\n./configure -prefix=/install/path\nmake -j 4\nmake install\nsudo ldconfig /install/path/lib\n\n\n\n\n\n\nNote\n\n\n\nNote that libtool is installed in anaconda, so you should use $ which libtool command to check which binary you are using if you get a version mismatch error here."
+  },
+  {
+    "objectID": "posts/IT/headless-server.html#installing-virtual-gl",
+    "href": "posts/IT/headless-server.html#installing-virtual-gl",
+    "title": "Setting up a headless server",
+    "section": "Installing Virtual GL",
+    "text": "Installing Virtual GL\nClone source from Github then checkout 2.5.2 version with command $ git checkout -tag 2.5.2. It is recommended to use ccmake to config the project.\ncd /virutalgl/source\nmkdir build\ncd build;ccmake ..\nSet the following flags:\nCMAKE_CXX_FLAG=-L/Path/To/libjpeg-turbo8/lib\nCMAKE_C_FLAG=-L/Path/To/libjpeg-turbo8/lib\nCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG -fPIC\nCMAKE_BUILD_TYPE=Release\nThen generate project and build, you should finish without any errors. Setup VirtualGL\nThe display of X server is configured by the file /etc/X11/xorg.conf, an example is given below:\n# nvidia-xconfig: X configuration file generated by nvidia-xconfig\n# nvidia-xconfig:  version 375.66  (buildmeister@swio-display-x86-rhel47-06)  Mon May  1 15:45:32 PDT 2017\nSection \"DRI\"\n        Mode 0666\nEndSection\n\n\nSection \"ServerLayout\"\n    Identifier     \"Layout0\"\n    Screen      0  \"Screen0\" 0 0\n    InputDevice    \"Keyboard0\" \"CoreKeyboard\"\n    InputDevice    \"Mouse0\" \"CorePointer\"\nEndSection\n\nSection \"Files\"\nEndSection\n\nSection \"InputDevice\"\n\n    # generated from default\n    Identifier     \"Mouse0\"\n    Driver         \"mouse\"\n    Option         \"Protocol\" \"auto\"\n    Option         \"Device\" \"/dev/psaux\"\n    Option         \"Emulate3Buttons\" \"no\"\n    Option         \"ZAxisMapping\" \"4 5\"\nEndSection\n\nSection \"InputDevice\"\n\n    # generated from default\n    Identifier     \"Keyboard0\"\n    Driver         \"kbd\"\nEndSection\n\nSection \"Monitor\"\n    Identifier     \"Monitor0\"\n    VendorName     \"Unknown\"\n    ModelName      \"Unknown\"\n    HorizSync       28.0 - 33.0\n    VertRefresh     43.0 - 72.0\n    Option         \"DPMS\"\nEndSection\n\nSection \"Device\"\n    Identifier     \"Device0\"\n    Driver         \"nvidia\"\n    VendorName     \"NVIDIA Corporation\"\n    BoardName      \"TITAN Xp\"\n    Option \"Coolbits\" \"5\"\nEndSection\n\nSection \"Screen\"\n    Identifier     \"Screen0\"\n    Device         \"Device0\"\n    Monitor        \"Monitor0\"\n    DefaultDepth    24\n    Option         \"UseDisplayDevice\" \"None\" #This is required for headless computer\n    SubSection     \"Display\"\n        Virtual     1920 1080\n        Depth       24\n    EndSubSection\nEndSection"
+  },
+  {
+    "objectID": "posts/IT/headless-server.html#ipython-input-doesnt-have-any-keyboard-input",
+    "href": "posts/IT/headless-server.html#ipython-input-doesnt-have-any-keyboard-input",
+    "title": "Setting up a headless server",
+    "section": "Ipython input doesn’t have any keyboard input",
+    "text": "Ipython input doesn’t have any keyboard input\nThis happens because keyboard was not exported to X11. Export QT_XKB_CONFIG_ROOT=/usr/share/X11/xkb"
+  },
+  {
+    "objectID": "posts/IT/headless-server.html#kernel-version-mis-match",
+    "href": "posts/IT/headless-server.html#kernel-version-mis-match",
+    "title": "Setting up a headless server",
+    "section": "Kernel version mis-match",
+    "text": "Kernel version mis-match\nTry rebooting, this happens when you update the driver"
+  },
+  {
+    "objectID": "posts/fourier-transform/discrete-fourier-transform.html",
+    "href": "posts/fourier-transform/discrete-fourier-transform.html",
+    "title": "Discrete Fourier Transform",
+    "section": "",
+    "text": "For every continuous function \\(f(x)\\), the sampling process can be expressed as:\n\\[ \\bar{f}(x) = \\sum_{k=-\\infty}^{\\infty} f(x) \\cdot \\delta(x - kT) = f(nT) \\cdot \\text{III}_T(x) \\tag{1} \\]\nwhere \\(\\bar{f}(x)\\) is the sampled discrete function. The upper equation can be seen as a convolution.\n\n\n\nThen the Fourier transform of this equation would be\n\\[ \\mathscr{F}[\\bar{f}(x)] = \\hat{f}(k) * \\left[ \\frac{1}{T} \\text{III}\\_{1/T}(k) \\right]=\\frac{1}{T} \\sum\\_{n=-\\infty}^{\\infty} \\hat{f}(k - \\frac{n}{T}) \\tag{2.1}\\]\nwhere \\(\\hat{f}(k) = \\mathscr{F} [f(x)]\\).\nEq.[2.1] actually looks like copies of \\(\\hat{f}(k)\\) at \\(1/T\\) intervals. So you can say that sampling in the x-domain is equivalent to shift and paste in the k-domain. One problem is that if your $\\hat{f}(k) $ has components with higher then a certain frequency, it will overlap with the shifted \\(\\hat{f}(k - 1/T)\\). This overlap is un-resolvable and would create what we called Aliasing artifacts which we will talk about this later.\n\n\n\nNow moving back a little bit to Eq.[2.1]. I real life you won’t have infinite points. Suppose you sample $ N $ points from $ f(x)$ at a frequency \\(v\\) within the domain \\(x\\in [0, N-1]\\). The normalized DFT is defined by:\n\\[ X_k = \\sum\\_{n=0}^{N-1}x_n e^{-i 2 \\pi  k n / N } \\]\n\\[ x_n = \\frac{1}{N}\\sum\\_{n=0}^{N-1}X_k e^{i 2 \\pi  k n/N } \\]\nwhere \\(x_n, X_k\\) is the n-th sample and the k-th coefficient respectively. So which frequencies does the k-th bin represents?\nFor a simple sinusoidal function $f(x) = \\cos (2\\pi \\cdot 3x) $ we can easily identify the frequency of this function is 3. Similar for \\(f(x) = \\exp (i 2 \\pi 3 x)\\). Now consider the following expansion of the inverse DFT:\n\\[ \\displaystyle x_n = \\frac{1}{N} \\left[ X_0 +  X_1 \\cdot e^{i 2 \\pi n \\frac{1}{N} } + X_2 \\cdot e^{i 2 \\pi  n \\frac{2}{N} }  + \\cdots \\right] \\tag{2.2} \\]\nOne can immediately identify \\(X_k\\) is the coefficient of a \\[ k/N\\] frequency function. The resolution of the frequency domain is therefore \\(1/N\\), for example if you sample 512 points from 0mm to 511mm, each bin in the k-space resolves to \\(\\frac{1}{512} mm^{-1}\\) with the bound \\([0, 1]mm^{-1}\\),\nNow things gets trickier if you are not using 1mm as your sampling interval, but this problem is essentially an axis re-scale problem. Say you define \\(2y = x\\) then \\(f(x) = f(2y)\\), very straight forward. Now imagine you sample 512 points from 0 to 255mm. Just re-scale our previous result by substituting \\(n \\rightarrow 2n'\\):\n\\[ x\\_{n} = x\\_{2n'} = \\frac{1}{N} \\sum\\_{n'=0}^{N-1} X_k e^{i 2 \\pi  k \\cdot 2n'/N } \\]\nBy the same logic, the k-th bin corresponds to \\(\\frac{2k}{N}\\). Notice how the increase in x-space sampling rate reduce the k-space resolution while increase the k-space range. This is actually very logical, increasing your sampling rate allows one to discovers higher frequencies component. Imaging you sample at 1Hz, you will never know there are a 5Hz component in the sampling target.\n\nWe therefore draw the conclusion about x-space vs k-space resolution conversion:\n\\[ \\Delta k = \\frac{\\Delta x}{N} \\tag{2.3}\\]\nwhere $ N $ is the number of sampled points, \\(\\Delta k, \\Delta x\\) are the resolution of k and x-space respectively. Note that in k-space, the range always starts from 0 regardless of the range of $ x$ sampled.\n\n\n\nKnowing how to calculate the resolution, the next logical question is what is the minimum x-space sampling one should use to sample a function for DFT so that the inverse DFT recovers the original signal?\nRemember I mentioned Aliasing Artifacts mentioned in previous section?\n\nThis is what happens if you don’t sample enough data points, the recovered signal is flawed.\nTo look at the reason behind, study Eq.[2.1] again, seeing it has a period of \\(1/T\\) (\\(T\\) represents \\(\\Delta x\\) in Eq.[2.3]) and recall that if \\(\\hat{f}(k)\\) has components in bins greater then \\(\\frac{1}{2 \\Delta x}\\), overlapping of frequencies coefficient occurs and information is lost as we cannot resolve the overlapped frequencies.\nNyquist Theory states that in order to prevent this, knowing that the highest frequencies component of the sample is \\(B\\), one has to sample at some frequencies:\n\\[ F_s &gt; \\frac{1}{2 B} \\tag{3.1}\\]"
+  },
+  {
+    "objectID": "posts/fourier-transform/discrete-fourier-transform.html#sampling-from-continuous-function",
+    "href": "posts/fourier-transform/discrete-fourier-transform.html#sampling-from-continuous-function",
+    "title": "Discrete Fourier Transform",
+    "section": "",
+    "text": "For every continuous function \\(f(x)\\), the sampling process can be expressed as:\n\\[ \\bar{f}(x) = \\sum_{k=-\\infty}^{\\infty} f(x) \\cdot \\delta(x - kT) = f(nT) \\cdot \\text{III}_T(x) \\tag{1} \\]\nwhere \\(\\bar{f}(x)\\) is the sampled discrete function. The upper equation can be seen as a convolution."
+  },
+  {
+    "objectID": "posts/fourier-transform/discrete-fourier-transform.html#discrete-fourier-transform",
+    "href": "posts/fourier-transform/discrete-fourier-transform.html#discrete-fourier-transform",
+    "title": "Discrete Fourier Transform",
+    "section": "",
+    "text": "Then the Fourier transform of this equation would be\n\\[ \\mathscr{F}[\\bar{f}(x)] = \\hat{f}(k) * \\left[ \\frac{1}{T} \\text{III}\\_{1/T}(k) \\right]=\\frac{1}{T} \\sum\\_{n=-\\infty}^{\\infty} \\hat{f}(k - \\frac{n}{T}) \\tag{2.1}\\]\nwhere \\(\\hat{f}(k) = \\mathscr{F} [f(x)]\\).\nEq.[2.1] actually looks like copies of \\(\\hat{f}(k)\\) at \\(1/T\\) intervals. So you can say that sampling in the x-domain is equivalent to shift and paste in the k-domain. One problem is that if your $\\hat{f}(k) $ has components with higher then a certain frequency, it will overlap with the shifted \\(\\hat{f}(k - 1/T)\\). This overlap is un-resolvable and would create what we called Aliasing artifacts which we will talk about this later."
+  },
+  {
+    "objectID": "posts/fourier-transform/discrete-fourier-transform.html#x-vs-k-space-resolution-conversion",
+    "href": "posts/fourier-transform/discrete-fourier-transform.html#x-vs-k-space-resolution-conversion",
+    "title": "Discrete Fourier Transform",
+    "section": "",
+    "text": "Now moving back a little bit to Eq.[2.1]. I real life you won’t have infinite points. Suppose you sample $ N $ points from $ f(x)$ at a frequency \\(v\\) within the domain \\(x\\in [0, N-1]\\). The normalized DFT is defined by:\n\\[ X_k = \\sum\\_{n=0}^{N-1}x_n e^{-i 2 \\pi  k n / N } \\]\n\\[ x_n = \\frac{1}{N}\\sum\\_{n=0}^{N-1}X_k e^{i 2 \\pi  k n/N } \\]\nwhere \\(x_n, X_k\\) is the n-th sample and the k-th coefficient respectively. So which frequencies does the k-th bin represents?\nFor a simple sinusoidal function $f(x) = \\cos (2\\pi \\cdot 3x) $ we can easily identify the frequency of this function is 3. Similar for \\(f(x) = \\exp (i 2 \\pi 3 x)\\). Now consider the following expansion of the inverse DFT:\n\\[ \\displaystyle x_n = \\frac{1}{N} \\left[ X_0 +  X_1 \\cdot e^{i 2 \\pi n \\frac{1}{N} } + X_2 \\cdot e^{i 2 \\pi  n \\frac{2}{N} }  + \\cdots \\right] \\tag{2.2} \\]\nOne can immediately identify \\(X_k\\) is the coefficient of a \\[ k/N\\] frequency function. The resolution of the frequency domain is therefore \\(1/N\\), for example if you sample 512 points from 0mm to 511mm, each bin in the k-space resolves to \\(\\frac{1}{512} mm^{-1}\\) with the bound \\([0, 1]mm^{-1}\\),\nNow things gets trickier if you are not using 1mm as your sampling interval, but this problem is essentially an axis re-scale problem. Say you define \\(2y = x\\) then \\(f(x) = f(2y)\\), very straight forward. Now imagine you sample 512 points from 0 to 255mm. Just re-scale our previous result by substituting \\(n \\rightarrow 2n'\\):\n\\[ x\\_{n} = x\\_{2n'} = \\frac{1}{N} \\sum\\_{n'=0}^{N-1} X_k e^{i 2 \\pi  k \\cdot 2n'/N } \\]\nBy the same logic, the k-th bin corresponds to \\(\\frac{2k}{N}\\). Notice how the increase in x-space sampling rate reduce the k-space resolution while increase the k-space range. This is actually very logical, increasing your sampling rate allows one to discovers higher frequencies component. Imaging you sample at 1Hz, you will never know there are a 5Hz component in the sampling target.\n\nWe therefore draw the conclusion about x-space vs k-space resolution conversion:\n\\[ \\Delta k = \\frac{\\Delta x}{N} \\tag{2.3}\\]\nwhere $ N $ is the number of sampled points, \\(\\Delta k, \\Delta x\\) are the resolution of k and x-space respectively. Note that in k-space, the range always starts from 0 regardless of the range of $ x$ sampled."
+  },
+  {
+    "objectID": "about.html#education",
+    "href": "about.html#education",
+    "title": "About Me",
+    "section": "Education",
+    "text": "Education\n\n\n\n\n\n\n\nYear\nQualification\n\n\n\n\n2015\nBachelor of Science (BSc), \nma Physics, mi Computer Science\nThe Chinese University of Hong Kong, HKSAR\n\n\n2018\nMaster of Philosophy (MPhil)\nDepartment of Imaging and Interventional Radiology\nThe Chinese University of Hong Kong, HKSAR\n\n\n2021\nDoctor of Philosophy (PhD)\nDepartment of Imaging and Interventional Radiology\nThe Chinese University of Hong Kong, HKSAR\n\n\n\n\nSelected Publications\n\nWong, L. M., et al. “Radiomics for Discrimination between Early-Stage Nasopharyngeal Carcinoma and Benign Hyperplasia with Stable Feature Selection on MRI. Cancers (Basel). 2022;14(14).\nWong, L. M., et al. “A convolutional neural network combined with positional and textural attention for the fully automatic delineation of primary nasopharyngeal carcinoma on non-contrast-enhanced MRI.” Quantitative Imaging in Medicine and Surgery 11.9 (2021): 3932-3944.\nWong, L. M., et al. “Convolutional neural network in nasopharyngeal carcinoma: how good is automatic delineation for primary tumor on a non-contrast-enhanced fat-suppressed T2-weighted MRI?” Japanese Journal of Radiology (2021): 1-9.\nWong, L. M., et al. “Convolutional neural network for discriminating nasopharyngeal carcinoma and benign hyperplasia on MRI.” European Radiology (2020): 1-8.\nWong, L. M., Shi, L., Xiao, F., & Griffith, J. F. “Fully automated segmentation of wrist bones on T2-weighted fat-suppressed MR images in early rheumatoid arthritis.” Quantitative imaging in medicine and surgery 9.4 (2019): 57.\nHung, K. F., …, Wong, L. M.*, & Leung, Y. Y.*. Automatic detection and segmentation of morphological changes of the maxillary sinus mucosa on cone-beam computed tomography images using a three-dimensional convolutional neural network. Clin Oral Investig, 26.5 (2022): 3987-3998. (*Corresponding Author)\nLam, W. K. J., A. D. King, … Wong, L. M., …, et al. “Recommendations for Epstein-Barr Virus-Based Screening for Nasopharyngeal Cancer in High- and Intermediate-Risk Regions.” J Natl Cancer Inst 115, no. 4 (Apr 11 2023): 355-64.\nZhang, R., King, A. D., Wong, L. M., Bhatia, K. S., Qamar, S., Mo, F. K. F., Vlantis, A. C., & Ai, Q. Y. H. (2023). Discriminating between benign and malignant salivary gland tumors using diffusion-weighted imaging and intravoxel incoherent motion at 3 Tesla. Diagn Interv Imaging, 104(2), 67-75.\nZhang, R., Ai, Q. Y. H., Wong, L. M., Green, C., Qamar, S., So, T. Y., Vlantis, A. C., & King, A. D. (2022). Radiomics for discriminating benign and malignant salivary gland tumors; which radiomic feature categories and MRI sequences should be used? Cancers, 14(23), 5804."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Home",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\nDiscrete Fourier Transform\n\n\n\nDFT\n\n\npython\n\n\ncode\n\n\nsignal\n\n\n\n\n\n\n\nMLun Wong\n\n\nJan 11, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSetting up a headless server\n\n\n\ncode\n\n\nserver\n\n\nIT\n\n\nopencl\n\n\nxrdp\n\n\n\n\n\n\n\nMLun Wong\n\n\nJan 9, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\nHarlow Malloc\n\n\nJan 9, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nImaging - Convolution between an image and a filtering kernel\n\n\n\nPython\n\n\nCode\n\n\nConvolution\n\n\n\n\n\n\n\nMLun Wong\n\n\nJan 6, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nStochastic - Particle Filtering and Markov Chain Monte Carlo\n\n\n\nstochastic\n\n\npython\n\n\nrandom\n\n\nnotes\n\n\nmonte carlo\n\n\nmcmc\n\n\n\n\n\n\n\nMLun Wong\n\n\nMay 11, 2017\n\n\n\n\n\n\n\n\n\n\n\n\nStochastic - Python Example of a Random Walk Process\n\n\n\nstochastic\n\n\npython\n\n\nrandom\n\n\nnotes\n\n\n\n\n\n\n\nMLun Wong\n\n\nMar 12, 2017\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStochastic - Python Example of a Random Walk Process\n\n\n\nstochastic\n\n\npython\n\n\nrandom\n\n\nnotes\n\n\n\n\n\n\n\nMLun Wong\n\n\nMar 12, 2017\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/fourier-transform/index.html",
+    "href": "posts/fourier-transform/index.html",
+    "title": "Imaging - Convolution between an image and a filtering kernel",
+    "section": "",
+    "text": "The equivalence of convolution in the image domain and element-wise multiplication in the Fourier domain is a foundational concept in image processing, applicable even within discrete grid spaces. Textbooks often present this relationship as follows:\n\\[\n\\begin{align}\nI(\\vec{x}) = f(\\vec{x}) * g(\\vec{\\tau}) &= \\sum_{\\vec{\\tau}} f(\\vec{x} - \\vec{\\tau}) \\cdot g(\\vec{\\tau}) \\\\\n&= \\mathscr{F}^{-1}\\left\\{\\mathscr{F}[f(\\vec{x})] \\cdot \\mathscr{F}[g(\\vec{\\tau})]\\right\\} \\tag{1}\n\\end{align}\n\\]\nHere, \\(I(\\vec{x})\\) represents the resulting n-dimensional image after convolution, with \\(x_i \\in X\\) and \\(\\tau_i \\in T\\) such that the domain \\(T \\subseteq X\\). This formulation is straightforward when the convolution involves images of the same domain (i.e., identical size). However, the scenario of interest involves the special case where \\(T \\neq X\\), specifically \\(T \\subset X\\). The question then arises: how do we compute this\n\\[\n\\mathscr{F}[f(\\vec{x})] \\cdot \\mathscr{F}[g(\\vec{\\tau})]\n\\]\nPractically when the kernel \\(g(\\vec{\\tau})\\) and the image \\(f(\\vec{x})\\) differ in size?\nIn such cases, direct element-wise multiplication is not feasible. This dilemma is seldom addressed in textbooks, leaving a gap in practical understanding. So what can we do here?\nIn reality, you can thought of the scenario as convolving the image with a kernel that is centered and padded with zeros elsewhere. The most straightforward practical approach is to equalize the domains by padding the kernel \\(g(\\vec{\\tau})\\) with zeros, effectively expanding the domain \\(T\\) to match \\(X\\).\nThis method ensures that the Fourier transform of the padded kernel has the same dimensionality as the Fourier transform of the image, allowing for the required element-wise multiplication in the Fourier space.\n\n\n\n\n'''Import libraries'''\nimport numpy as np\nfrom IPython.display import *\nfrom skimage.color import rgb2gray\nfrom skimage.io import imread\nimport scipy.ndimage as ndimage\nimport matplotlib.pyplot as plt\nimport warnings\nwarnings.filterwarnings('ignore')\n\n\n'''Load Images'''\n# Generate an example 512x512 image and 3x3 kernel\nimage = imread(\"./lena.png\").astype('float32')\nimage = rgb2gray(image[...,:3])\n\nplt.imshow(image,cmap='gray')\nplt.show()\n\n\n\n\nFig.1 Lena.png. We are using this image as our input.\n\n\n\n\ndef out_conv(im, kn):\n    \"\"\"Convolution\"\"\"\n    fftkern = np.fft.fftshift(np.fft.fft2(np.pad(kn,\n                            [[256-1, 256-2], [256-1,256-2]],\n                            constant_values=0,\n                            mode='constant')\n                    ))\n    fftimage = np.fft.fftshift(np.fft.fft2(im))\n\n    # Multiplication\n    fftoutput = fftkern*fftimage\n\n    # Inverse fourier transform\n    out = np.fft.ifftshift(np.fft.ifft2(np.fft.fftshift(fftoutput)))        \n    return np.real(out)\n\n# Define 3 by 3 Kernel\nkern = np.array([[1, 0, -1], [1, 0, -1], [1, 0, -1]], dtype=np.float32)\nioutput = out_conv(image, kern)\n\n# Scipy output as ground truth\nspoutput = ndimage.filters.convolve(image, kern)\n\nfig = plt.figure(figsize=(10, 5))\nax1, ax2 = [fig.add_subplot(i) for i in [121, 122]]\nax1.imshow(ioutput, cmap=\"Greys_r\")\nax2.imshow(spoutput, cmap=\"Greys_r\")\nax1.set_title(r\"$\\mathscr{F}[f(\\vec{x})]$ Result by us\")\nax2.set_title(r\"$\\mathscr{F}[f(\\vec{x})]$ Result by `scipy`\")\n\n\n# calculate and show the difference\ndiff = np.abs(spoutput - ioutput)\nfig = plt.figure(figsize=(5, 5))\nax1 = fig.add_subplot(111)\nax1.imshow(diff, cmap='jet', vmin=-10, vmax=10)\nax1.set_title(\"Real part differences between us and `scipy`\")\n\n# display(Markdown(\"## Results\"))\nplt.show()\n\n\n\n\n\n\n\n\n\n\nSeems like we have repeated the conv function scipy implemented! But did we really? Lets take closer to the edge of the image:\n\n\nCode\nfig, ax = plt.subplots(1, 2, figsize=(10, 5))\nax[0].imshow(spoutput[:25, :25], cmap='jet', vmin=-10, vmax=10)\nax[1].imshow(ioutput[:25, :25], cmap='jet', vmin=-10, vmax=10)\nax[0].set_title(\"`scipy` at the upper left corner\")\nax[1].set_title(\"Ours' at the upper left corner\")\nplt.show()\n\n\n\n\n\nFig.2 Difference between our implementation of convolution and scipy\n\n\n\n\nWow, what happened here? As you can see, our implementation differs with scipy at the edge of the output image. So what is actually happening? To keep things short, this has to do with how the kernel was convolved at the edge of the image. FFT was implemented based on the assumption that the image is periodic outside of the presented discrete domain \\(X\\). Therefore, when the convolve (in \\(x\\) space) reaches the edge, its wrapping back the other end of the image.\n\n\n\n\n\nThis is the most straightforward approach and the one used initially in this workbook, where zeros are added to the borders of the kernel image. Now remember that FFT requires the input to have a dimension as a power of 2, this means that for odd number sized kernels, the padding is always asymetric.\n\n\n\nWhen using FFT for convolution, some libraries and frameworks automatically handle padding. The input signals are implicitly padded with zeros to the next power of two or to a size that allows for the most efficient computation by the FFT algorithm.\n\n\n\nIn some cases, especially in neural networks, convolutions are performed without padding, known as ‘valid’ convolution. This approach results in an output that is smaller than the input because only the regions where the kernel and input fully overlap are computed.\n\n\n\nInstead of padding with zeros, the border values are reflected or mirrored across the edge. This can help reduce the artifacts introduced by the hard boundary of zero-padding and can be more appropriate for certain types of data, such as images.\n\n\n\nThis involves wrapping the signal around, effectively creating a toroidal topology. This is the inherent assumption in FFT-based convolution, but it can also be done explicitly in the spatial domain.\n\n\n\nThe edge values are replicated to the padded regions. This can sometimes produce more natural results than zero-padding, particularly for image processing tasks.\n\n\n\nUsed mainly in image inpainting, partial convolutions involve a mask that indicates which pixels are valid, allowing the convolution to be reweighted to ignore the contribution from missing or padded values.\n\n\n\nAlso known as atrous convolutions, these involve spacing out the kernel elements, which allows for a larger receptive field without increasing the computational complexity. This is not directly a padding method but can be used to reduce the need for padding by controlling the resolution at which feature maps are computed.\n\n\n\nBy skipping input values with a certain stride, these convolutions effectively downsample the input. This can also reduce the need for padding by adjusting the output size."
+  },
+  {
+    "objectID": "posts/fourier-transform/index.html#zero-padding-explicit-padding",
+    "href": "posts/fourier-transform/index.html#zero-padding-explicit-padding",
+    "title": "Imaging - Convolution between an image and a filtering kernel",
+    "section": "",
+    "text": "This is the most straightforward approach and the one used initially in this workbook, where zeros are added to the borders of the kernel image. Now remember that FFT requires the input to have a dimension as a power of 2, this means that for odd number sized kernels, the padding is always asymetric."
+  },
+  {
+    "objectID": "posts/fourier-transform/index.html#implicit-padding-in-fast-fourier-transform-fft",
+    "href": "posts/fourier-transform/index.html#implicit-padding-in-fast-fourier-transform-fft",
+    "title": "Imaging - Convolution between an image and a filtering kernel",
+    "section": "",
+    "text": "When using FFT for convolution, some libraries and frameworks automatically handle padding. The input signals are implicitly padded with zeros to the next power of two or to a size that allows for the most efficient computation by the FFT algorithm."
+  },
+  {
+    "objectID": "posts/fourier-transform/index.html#valid-convolution",
+    "href": "posts/fourier-transform/index.html#valid-convolution",
+    "title": "Imaging - Convolution between an image and a filtering kernel",
+    "section": "",
+    "text": "In some cases, especially in neural networks, convolutions are performed without padding, known as ‘valid’ convolution. This approach results in an output that is smaller than the input because only the regions where the kernel and input fully overlap are computed."
+  },
+  {
+    "objectID": "posts/fourier-transform/index.html#reflective-or-symmetric-padding",
+    "href": "posts/fourier-transform/index.html#reflective-or-symmetric-padding",
+    "title": "Imaging - Convolution between an image and a filtering kernel",
+    "section": "",
+    "text": "Instead of padding with zeros, the border values are reflected or mirrored across the edge. This can help reduce the artifacts introduced by the hard boundary of zero-padding and can be more appropriate for certain types of data, such as images."
+  },
+  {
+    "objectID": "posts/fourier-transform/index.html#circular-padding",
+    "href": "posts/fourier-transform/index.html#circular-padding",
+    "title": "Imaging - Convolution between an image and a filtering kernel",
+    "section": "",
+    "text": "This involves wrapping the signal around, effectively creating a toroidal topology. This is the inherent assumption in FFT-based convolution, but it can also be done explicitly in the spatial domain."
+  },
+  {
+    "objectID": "posts/fourier-transform/index.html#replicate-padding",
+    "href": "posts/fourier-transform/index.html#replicate-padding",
+    "title": "Imaging - Convolution between an image and a filtering kernel",
+    "section": "",
+    "text": "The edge values are replicated to the padded regions. This can sometimes produce more natural results than zero-padding, particularly for image processing tasks."
+  },
+  {
+    "objectID": "posts/fourier-transform/index.html#partial-convolutions",
+    "href": "posts/fourier-transform/index.html#partial-convolutions",
+    "title": "Imaging - Convolution between an image and a filtering kernel",
+    "section": "",
+    "text": "Used mainly in image inpainting, partial convolutions involve a mask that indicates which pixels are valid, allowing the convolution to be reweighted to ignore the contribution from missing or padded values."
+  },
+  {
+    "objectID": "posts/fourier-transform/index.html#dilated-convolutions",
+    "href": "posts/fourier-transform/index.html#dilated-convolutions",
+    "title": "Imaging - Convolution between an image and a filtering kernel",
+    "section": "",
+    "text": "Also known as atrous convolutions, these involve spacing out the kernel elements, which allows for a larger receptive field without increasing the computational complexity. This is not directly a padding method but can be used to reduce the need for padding by controlling the resolution at which feature maps are computed."
+  },
+  {
+    "objectID": "posts/fourier-transform/index.html#strided-convolutions",
+    "href": "posts/fourier-transform/index.html#strided-convolutions",
+    "title": "Imaging - Convolution between an image and a filtering kernel",
+    "section": "",
+    "text": "By skipping input values with a certain stride, these convolutions effectively downsample the input. This can also reduce the need for padding by adjusting the output size."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "posts/stochastic/monte-carlo.html",
+    "href": "posts/stochastic/monte-carlo.html",
+    "title": "Stochastic - Particle Filtering and Markov Chain Monte Carlo",
+    "section": "",
+    "text": "Caution\n\n\n\nUnder construction"
+  },
+  {
+    "objectID": "posts/stochastic/monte-carlo.html#particle",
+    "href": "posts/stochastic/monte-carlo.html#particle",
+    "title": "Stochastic - Particle Filtering and Markov Chain Monte Carlo",
+    "section": "Particle",
+    "text": "Particle\n\nA particle can be seen as an evaluation of all random variables in a joint distribution.\n\nExamples:\n\\[\\displaystyle  \\text{Particle A: } [X=1, Y=2] \\\\ \\\\ \\text{Particle B: } [X=3, Y=1] \\\\ \\\\ \\text{where } X, Y \\in  {1, 2, 3}\\]"
+  },
+  {
+    "objectID": "posts/stochastic/monte-carlo.html#mcmc",
+    "href": "posts/stochastic/monte-carlo.html#mcmc",
+    "title": "Stochastic - Particle Filtering and Markov Chain Monte Carlo",
+    "section": "MCMC",
+    "text": "MCMC\n\nMCMC refers to methods for randomly sample particles from a joint distribution with a Markov Chain."
+  },
+  {
+    "objectID": "posts/stochastic/monte-carlo.html#particle-filtering",
+    "href": "posts/stochastic/monte-carlo.html#particle-filtering",
+    "title": "Stochastic - Particle Filtering and Markov Chain Monte Carlo",
+    "section": "Particle Filtering",
+    "text": "Particle Filtering\n\nParticle Filtering is also termed Sequential Monte Carlo. It refers to the process of repeatedly sampling, cast votes after each iteration based on sampled particles and modify the next sampling based on the votes in order to obtain the probability distribution of some un-observable states.\n\nFormally, let \\(x\\) be the unobservable states and \\(y\\) be the observable states related to \\(x\\). Suppose we receive observations of \\(y\\) at each time step \\(k\\), we can write the probability based on a Markov Chain:\n\\[\\displaystyle X_k\\|(X\\_{k-1} =x\\_{k-1}) \\propto p(x_k\\|x\\_{k-1})\\]\n\\[\\displaystyle Y_k\\|(X\\_{k} =x\\_{k}) \\propto p(y_k\\|x\\_{k})\\]\nBased on Chapman-Kolmogorov Equation and Bayes Theorem, the conditional probability distribution of latent states \\(x\\) based on priori knowledge \\(y\\) is:\n\\[\\displaystyle p(x_k\\|y\\_{1:k}) \\propto p(y_k\\|x_k)\\int_k p(x_k\\|x\\_{k-1})p(x\\_{k-1}\\|Y\\_{1:K-1})\\]"
+  },
+  {
+    "objectID": "posts/stochastic/monte-carlo.html#gibbs-sampling",
+    "href": "posts/stochastic/monte-carlo.html#gibbs-sampling",
+    "title": "Stochastic - Particle Filtering and Markov Chain Monte Carlo",
+    "section": "Gibbs Sampling",
+    "text": "Gibbs Sampling\n\n#| label: alg-quicksort\n#| html-indent-size: \"1.2em\"\n#| html-comment-delimiter: \"//\"\n#| html-line-number: true\n#| html-line-number-punc: \":\"\n#| html-no-end: false\n#| pdf-placement: \"htb!\"\n#| pdf-line-number: true\n\n\\begin{algorithm}\n\\caption{Quicksort}\n\\begin{algorithmic}\n\\Procedure{Quicksort}{$A, p, r$}\n  \\If{$p &lt; r$}\n    \\State $q = $ \\Call{Partition}{$A, p, r$}\n    \\State \\Call{Quicksort}{$A, p, q - 1$}\n    \\State \\Call{Quicksort}{$A, q + 1, r$}\n  \\EndIf\n\\EndProcedure\n\\Procedure{Partition}{$A, p, r$}\n  \\State $x = A[r]$\n  \\State $i = p - 1$\n  \\For{$j = p, \\dots, r - 1$}\n    \\If{$A[j] &lt; x$}\n      \\State $i = i + 1$\n      \\State exchange\n      $A[i]$ with     $A[j]$\n    \\EndIf\n    \\State exchange $A[i]$ with $A[r]$\n  \\EndFor\n\\EndProcedure\n\\end{algorithmic}\n\\end{algorithm}\nUnknown: Joint distribution $P(X_1, X_2, , X_n) $\nKnown: Conditional Probability $P(X_i|_{others}) $\nGoal: Obtain an estimation of the joint distribution\nSteps:\n\nChoose an initial value  \\(X\\^0_i\\) for the variable of interest.\nCompute distribution by randomly fixing  “others” variable $P(X_j|X_i, _{others}) $ for some \\(j \\neq i\\)\nSample from distribution to get a realization of $X_j $, then update the conditional probability $P(X_i|X_j, _{others}) $ correspondingly,\nSample the target\nDo step 2 to step 3 repeatedly for all $j i $ for k iterations.\n\n\nAn implementation is given below:\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport scipy.integrate as integrate \nimport seaborn as sns \nimport tqdm.auto as auto  \n\n\"\"\" \nThis program demonstrates a two-variable Gibbs sampling iteration.  \nSuppose we are now interested in knowing P(X, Y), and both P(X|Y)  \nand P(Y|X) is known.  \n\nVariables: \n   PX, PY: \n        Pre-defined probability distribution of the two random variable. \n   properties: \n        Property of the pdf PX and PY, including the domain, resolution and a norm constant which is for plotting p.m.f  \n\"\"\" \n\ndef GenerateSamplers(): \n    \"\"\" \n    Creates a pair of random variables, one probability distribution is a \n    gaussian mixture, another is a simple gaussian with mean 0 and sd 10.  \n    Domain of the sample is set to -10 to 10  \n    :return [lambda: sample1, lambda: sample2: \n    \"\"\" \n    # Properties settings \n    resolution = 500 # 2000 partitions between whole domain \n    domain = [-10, 10] \n    gm = {'means': [-1, 2, -4], 'sds': [0.4, 8, 3], 'weight': [0.1, 0.6, 0.3]} \n    gy = {'means': 0, 'sds': 2}  \n    # define a normed gaussian \n    def Gaussian(mean, var, x): \n        return 1 / (var * np.sqrt(2 * np.pi)) * np.exp(-0.5 * (x - mean) ** 2 / var ** 2)  \n    \n    w = np.linspace(domain[0], domain[1], resolution)  \n    \n    # Generate pdf w/o normalization \n    _PX = lambda x: np.sum([gm['weight'][i]*Gaussian(gm['means'][i], gm['sds'][i], x) for i in range(len(gm['means']))], axis=0)  \n        _PY = lambda x: Gaussian(gy['means'], gy['sds'], x)  \n    \n    # Normalization \n    PX = lambda x: _PX(x) / integrate.quad(_PX, domain[0], domain[1])[0] # quad return mean, sd \n    PY = lambda x: _PY(x) / integrate.quad(_PY, domain[0], domain[1])[0]   \n    \n    # Create sampler functions \n    properties = {\n        'resolution': resolution, \n        'domain': domain, \n        'normConstant': (domain[1] - domain[0])/float(resolution - 1)\n    } \n    return PX, PY, properties\n\n'''main'''\nPX, PY, properties = GenerateSamplers() \nw = np.linspace(\n    properties['domain'][0], \n    properties['domain'][1], \n    properties['resolution']\n)  \n P_joint = lambda x: PX(x[0]) * PY(x[1]) \n PYcX = lambda x, y: P_joint((x, y)) / PX(x) # We somehow know this, here it is the arithmetic form, it could be established \n PXcY = lambda x, y: P_joint((x, y)) / PY(y) # with other methods (e.g., empirically estimated)      \n samples = [] \n x_k = float(np.random.choice(w)) # Initial sample \n for k in auto.trange(25000): \n\n  # Sample y_k based on X_k of the last iteration \n\n  _nPYcX = PYcX(x_k, w).sum() # normalize factor, for entertaining choice \n\n  y_k = np.random.choice(w, p=PYcX(x_k, w)/_nPYcX, size=1) # sample from new probability distribution \n\n   \n\n  # Now do it for x_k \n\n  _nPXcY = PXcY(w, y_k).sum() \n\n  x_k = np.random.choice(w, p=PXcY(w, y_k)/_nPXcY, size=1) \n\n  samples.append((float(x_k), float(y_k))) # Record the sample       \n # Plotting \n samples = np.stack(samples) \n joint_pdf = lambda x: PX(x[0]) * PY(x[1]) # This is what we are trying to estimate  \n joint_mesh = np.meshgrid(w, w) \n fig, ax = plt.subplots(1, 1, figsize=(6, 6)) \n CS = ax.contour(joint_mesh[0], joint_mesh[1], joint_pdf(joint_mesh), alpha=0.6, label=\"Estimated $P(X,Y)$\")      \n ax.scatter(samples[:, 0], samples[:, 1], s=2, alpha=0.2) \n ax.legend() \n plt.show() \n\nThe result is the following figure, where the sampled points are in blue and the contour of the joint distribution \\(P(X, Y)\\) is drawn:"
+  }
+]

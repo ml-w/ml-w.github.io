@@ -1,0 +1,88 @@
+---
+title: "About Me"
+image: assets/images/profile.jpg
+about:
+  template: solana
+  links:
+    - icon: mortarboard
+      text: Google Scholar
+      href: https://scholar.google.com/citations?user=JNKeB6cAAAAJ&hl=en
+    - icon: person-circle
+      text: Academic Page
+      href: http://www.diir.cuhk.edu.hk/profile/mr-wong-lun-matthew
+    - icon: github
+      text: Github
+      href: https://github.com/ml-w
+format:
+  html:
+    header-includes: |
+      <style id="aboutme-style"> h1 {margin-right: 1em;} </style> 
+---
+
+```{=html}
+<div style="text-align: center">
+<img src="https://img.shields.io/badge/Python-3766AB?style=flat&logo=Python&logoColor=white"> 
+<img src="https://img.shields.io/badge/Qt-41CD52?style=flat&logo=qt&logoColor=white"> 
+<img src="https://img.shields.io/badge/Docker-148CFF?style=flat&logo=Docker&logoColor=white"> 
+<img src="https://img.shields.io/badge/C%2B%2B-00599C?style=flat&logo=c%2B%2B&logoColor=white"> 
+<img src="https://img.shields.io/badge/OpenCV-5C3EE8?style=flat&logo=opencv&logoColor=white"> 
+<img src="https://img.shields.io/badge/Pytorch-FF3232?style=flat&logo=Pytorch&logoColor=white"> 
+<img src="https://img.shields.io/badge/CMake-064F8C?style=flat&logo=CMake&logoColor=white"> 
+<img src="https://img.shields.io/badge/r-%23276DC3.svg?style=flat&logo=r&logoColor=whit">
+<img src="https://img.shields.io/badge/ScikitLearn-F7931E?style=flat&logo=scikitlearn&logoColor=white"> 
+<img src="https://img.shields.io/badge/Numpy-1E8449?style=flat&logo=Numpy&logoColor=white">
+<img src="https://img.shields.io/badge/Pandas-150458?style=flat&logo=pandas&logoColor=white">
+</div>
+```
+<br>
+
+::: {style="text-align: center;"}
+**Biostatistician \| Computer Vision \| Image Analysis \| Big Data Analysis \| Artificial Intelligence \| Coffee** <i class="bi-cup-hot-fill"></i>
+
+------------------------------------------------------------------------
+
+I am an academic current serving under Department of Imaging and Radiology of The Chinese University of Hong Kong, where I obtained my PhD. I focused heavily on head and neck imaging, particularly nasopharyngeal carcinomas (NPC), which is a unique cancer known for its unusual demographics, affecting mostly men in South East Asia and is endemic in Hong Kong. My work is built upon the goal to screen NPC as early as possible, when they are still easily treatable with minimal side effects.
+:::
+
+------------------------------------------------------------------------
+
+## Education
+
++------------+--------------------------------------------------------+
+| Year       | Qualification                                          |
++============+========================================================+
+| 2015       | **Bachelor of Science (BSc),** *\                      |
+|            | ma Physics, mi Computer Science*                       |
+|            |                                                        |
+|            | *The Chinese University of Hong Kong, HKSAR*           |
++------------+--------------------------------------------------------+
+| 2018       | **Master of Philosophy (MPhil)**                       |
+|            |                                                        |
+|            | *Department of Imaging and Interventional Radiology\   |
+|            | The Chinese University of Hong Kong, HKSAR*            |
++------------+--------------------------------------------------------+
+| 2021       | **Doctor of Philosophy (PhD)**                         |
+|            |                                                        |
+|            | *Department of Imaging and Interventional Radiology\   |
+|            | The Chinese University of Hong Kong, HKSAR*            |
++------------+--------------------------------------------------------+
+
+### Selected Publications
+
+1.  **Wong, L. M.,** et al. “Radiomics for Discrimination between Early-Stage Nasopharyngeal Carcinoma and Benign Hyperplasia with Stable Feature Selection on MRI. Cancers (Basel). 2022;14(14).
+
+2.  **Wong, L. M.**, et al. “A convolutional neural network combined with positional and textural attention for the fully automatic delineation of primary nasopharyngeal carcinoma on non-contrast-enhanced MRI.” *Quantitative Imaging in Medicine and Surgery* 11.9 (2021): 3932-3944.
+
+3.  **Wong, L. M.**, et al. "Convolutional neural network in nasopharyngeal carcinoma: how good is automatic delineation for primary tumor on a non-contrast-enhanced fat-suppressed T2-weighted MRI?" *Japanese Journal of Radiology* (2021): 1-9.
+
+4.  **Wong, L. M.**, et al. "Convolutional neural network for discriminating nasopharyngeal carcinoma and benign hyperplasia on MRI." *European Radiology* (2020): 1-8.
+
+5.  **Wong, L. M.,** Shi, L., Xiao, F., & Griffith, J. F. “Fully automated segmentation of wrist bones on T2-weighted fat-suppressed MR images in early rheumatoid arthritis.” *Quantitative imaging in medicine and surgery* 9.4 (2019): 57.
+
+6.  Hung, K. F., …, **Wong, L. M.**\*, & Leung, Y. Y.\*. Automatic detection and segmentation of morphological changes of the maxillary sinus mucosa on cone-beam computed tomography images using a three-dimensional convolutional neural network. Clin Oral Investig, 26.5 (2022): 3987-3998. (\*Corresponding Author)
+
+7.  Lam, W. K. J., A. D. King, … **Wong, L. M.**, …*, et al.* "Recommendations for Epstein-Barr Virus-Based Screening for Nasopharyngeal Cancer in High- and Intermediate-Risk Regions." *J Natl Cancer Inst* 115, no. 4 (Apr 11 2023): 355-64.
+
+8.  Zhang, R., King, A. D., **Wong, L. M.,** Bhatia, K. S., Qamar, S., Mo, F. K. F., Vlantis, A. C., & Ai, Q. Y. H. (2023). Discriminating between benign and malignant salivary gland tumors using diffusion-weighted imaging and intravoxel incoherent motion at 3 Tesla. *Diagn Interv Imaging*, *104*(2), 67-75.
+
+9.  Zhang, R., Ai, Q. Y. H., **Wong, L. M.**, Green, C., Qamar, S., So, T. Y., Vlantis, A. C., & King, A. D. (2022). Radiomics for discriminating benign and malignant salivary gland tumors; which radiomic feature categories and MRI sequences should be used? *Cancers*, 14(23), 5804.

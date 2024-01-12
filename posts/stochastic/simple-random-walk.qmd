@@ -1,0 +1,58 @@
+---
+title: "Stochastic - Python Example of a Random Walk Process"
+author: "MLun Wong"
+date: "2017-03-12"
+categories: [stochastic, python, random, notes]
+image: images/1wtoakjk.bmp
+---
+
+::: serif-content
+# Simple Random Walk
+
+Simple random walk is the first step towards learning stochastic process. Essentially, we model a particle (of desired dimension) walking randomly as time (steps) goes by. Both the stride and the direction is random, but it follows a certain distribution.
+
+## Defining the problem
+
+First, let us define the problem formally.
+
+> To implement a 1-D simulation of random walk $S(t)$ within period $t \in T = \{0, 1, 2, \dots, N\}$ in sample space $\omega \in \mathbb{W}$, with discrete stochastic process $X_T = \{X_1, X_2, \dots, X_n \}$ called steps of the random\> walk with the constrain $\text{min} \leq X(t) \leq \text{max}$.
+
+## Formulation
+
+The random walk can be formally defined as follow:
+
+$$S(t) = S_0 + \sum_{t=1}^{n} X_t$$
+
+$S_0$ represents the initial value or start point of the random walk. Also, select that each elements of $X_T$ can take on integer values between -5 and 5. Implementation
+
+This simulation is equivalent to plotting $S(t)$ against $t$.
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate random numbers within the range -5 to 5
+# Note that randint(-5, high=6) generate range -5 to 5
+N =5100 ; MIN_STEP = -5; MAX_STEP = 6; S_0 = 0; # Define parameters of the simulation
+X_T = np.random.randint(MIN_STEP , high=MAX_STEP , size=N+1) # Generate the discrete stochastic process
+t = np.linspace(0, N, N+1) # Time domain
+S = [S_0 + np.sum(X_T[0:i]) for i in range(N+1)] # Calculate each S(t) of the random walk
+plt.plot(t, S, '-') # Plot
+```
+
+# 2D Random Flight
+
+Here's an example of a random flight of 1000 steps sampled from a process similar to above, but in 2-dimension.
+
+![](images/1wtoakjk.bmp)
+
+# Further Discussions
+
+## Applications
+
+In this example, we select that each elements $X(t) \in X_T, t \in T = \{0, 1, 2, \dots, n\}$ to follows $-5 \leq X(t) \leq 5 \text{ } \forall \text{ } t \in T$. It is, however, possible to introduce various other constrain to the process w.r.t. the application of your application. By modeling this distribution based on a known particle's path, one might be able to estimate its future movement. An even more sophisticated method to sample the path is to decide the distribution again based on the location of the particle and its surrounding environment. In real life, physical phenomenon, such as Brownian motion, can also be described by random walk.
+
+## Nature of $S$ and $X_T$
+
+It is also worthwhile to note that both $S$ and $X_T=\{T_1, T_2, \dots, T_n\}$ fulfills the definition of stochastic process with the state space being different. In otherwords, stochastic process is commutative in nature.
+:::

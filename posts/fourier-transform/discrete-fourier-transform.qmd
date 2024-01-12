@@ -1,0 +1,77 @@
+---
+title: "Discrete Fourier Transform"
+author: "MLun Wong"
+date: "2024-01-11"
+categories: [DFT,python,code, signal]
+---
+
+```{=html}
+<div class="serif-content">
+```
+## Sampling From Continuous Function
+
+For every continuous function $f(x)$, the sampling process can be expressed as:
+
+$$ \bar{f}(x) = \sum_{k=-\infty}^{\infty} f(x) \cdot \delta(x - kT) = f(nT) \cdot \text{III}_T(x) \tag{1} $$
+
+where $\bar{f}(x)$ is the sampled discrete function. The upper equation can be seen as a convolution.
+
+## Discrete Fourier Transform
+
+Then the Fourier transform of this equation would be
+
+$$ \mathscr{F}[\bar{f}(x)] = \hat{f}(k) * \left[ \frac{1}{T} \text{III}\_{1/T}(k) \right]=\frac{1}{T} \sum\_{n=-\infty}^{\infty} \hat{f}(k - \frac{n}{T}) \tag{2.1}$$
+
+where $\hat{f}(k) = \mathscr{F} [f(x)]$.
+
+Eq.\[2.1\] actually looks like copies of $\hat{f}(k)$ at $1/T$ intervals. So you can say that sampling in the x-domain is equivalent to shift and paste in the k-domain. One problem is that if your \$\\hat{f}(k) \$ has components with higher then a certain frequency, it will overlap with the shifted $\hat{f}(k - 1/T)$. This overlap is un-resolvable and would create what we called **Aliasing artifacts** which we will talk about this later.
+
+## X vs k-space Resolution Conversion
+
+Now moving back a little bit to Eq.\[2.1\]. I real life you won't have infinite points. Suppose you sample \$ N \$ points from \$ f(x)\$ at a frequency $v$ within the domain $x\in [0, N-1]$. The normalized DFT is defined by:
+
+$$ X_k = \sum\_{n=0}^{N-1}x_n e^{-i 2 \pi  k n / N } $$
+
+$$ x_n = \frac{1}{N}\sum\_{n=0}^{N-1}X_k e^{i 2 \pi  k n/N } $$
+
+where $x_n, X_k$ is the n-th sample and the k-th coefficient respectively. So which frequencies does the k-th bin represents?
+
+For a simple sinusoidal function \$f(x) = \\cos (2\\pi \\cdot 3x) \$ we can easily identify the frequency of this function is 3. Similar for $f(x) = \exp (i 2 \pi 3 x)$. Now consider the following expansion of the inverse DFT:
+
+$$ \displaystyle x_n = \frac{1}{N} \left[ X_0 +  X_1 \cdot e^{i 2 \pi n \frac{1}{N} } + X_2 \cdot e^{i 2 \pi  n \frac{2}{N} }  + \cdots \right] \tag{2.2} $$
+
+One can immediately identify $X_k$ is the coefficient of a $$ k/N$$ frequency function. The resolution of the frequency domain is therefore $1/N$, for example if you sample 512 points from 0mm to 511mm, each bin in the k-space resolves to $\frac{1}{512} mm^{-1}$ with the bound $[0, 1]mm^{-1}$,
+
+Now things gets trickier if you are not using 1mm as your sampling interval, but this problem is essentially an axis re-scale problem. Say you define $2y = x$ then $f(x) = f(2y)$, very straight forward. Now imagine you sample 512 points from 0 to 255mm. Just re-scale our previous result by substituting $n \rightarrow 2n'$:
+
+$$ x\_{n} = x\_{2n'} = \frac{1}{N} \sum\_{n'=0}^{N-1} X_k e^{i 2 \pi  k \cdot 2n'/N } $$
+
+By the same logic, the k-th bin corresponds to $\frac{2k}{N}$. Notice how the increase in x-space sampling rate reduce the k-space resolution while increase the k-space range. This is actually very logical, increasing your sampling rate allows one to discovers higher frequencies component. Imaging you sample at 1Hz, you will never know there are a 5Hz component in the sampling target.
+
+![](images/j3ou6bl2.bmp)
+
+We therefore draw the conclusion about x-space vs k-space resolution conversion:
+
+$$ \Delta k = \frac{\Delta x}{N} \tag{2.3}$$
+
+where \$ N \$ is the number of sampled points, $\Delta k, \Delta x$ are the resolution of k and x-space respectively. Note that in k-space, the range always starts from 0 regardless of the range of \$ x\$ sampled.
+
+# Nyquist-Shannon Sampling Theory
+
+Knowing how to calculate the resolution, the next logical question is what is the minimum x-space sampling one should use to sample a function for DFT so that the inverse DFT recovers the original signal?
+
+Remember I mentioned **Aliasing Artifacts** mentioned in previous section?
+
+![](images/czybz8xp.bmp)
+
+This is what happens if you don't sample enough data points, the recovered signal is flawed.
+
+To look at the reason behind, study Eq.\[2.1\] again, seeing it has a period of $1/T$ ($T$ represents $\Delta x$ in Eq.\[2.3\]) and recall that if $\hat{f}(k)$ has components in bins greater then $\frac{1}{2 \Delta x}$, overlapping of frequencies coefficient occurs and information is lost as we cannot resolve the overlapped frequencies.
+
+Nyquist Theory states that in order to prevent this, knowing that the highest frequencies component of the sample is $B$, one has to sample at some frequencies:
+
+$$ F_s > \frac{1}{2 B} \tag{3.1}$$
+
+```{=html}
+</div>
+```

@@ -1,0 +1,28 @@
+/*-- scss:defaults --*/
+// Base document colors
+
+$body-color: #343a40;
+$primary: #2248;
+
+$border-color: tint-color($body-color, 30%);
+// $border-width: 5px;
+
+$body-bg-image: linear-gradient(70deg, rgba(181,181,214,1) 0%, rgba(237,234,209,1) 31%, rgba(231,200,200,1) 100%);
+$code-block-bg: #AAA6;
+
+// Table border is difficult to mess with
+$table-group-separator-color: $body-color;
+$table-group-separator-color-lighter: tint-color($table-group-separator-color, 60%);
+
+$card-background-image: linear-gradient(125deg, rgba(216, 216, 216, 0.3), rgba(192, 192, 192, 0.2) 70%);
+$card-background-image-lighter: linear-gradient(125deg, rgba(216, 216, 216, 0.3), rgba(192, 192, 192, 0.2) 70%);
+$card-color: $body-color;
+$card-cap-color:#0ff;
+
+$gray-300: $border-color;
+
+/*-- scss: rules --*/
+.input-group {
+  border: none !important; 
+  
+}

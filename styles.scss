@@ -1,0 +1,81 @@
+/*-- scss:defaults --*/
+$body-emphasis-color: shade-color($body-color, 50%);
+$input-border-color: $border-color;
+$form-select-indicator-color: $border-color;
+$list-group-color: $border-color;
+$breadcrumb-divider-color: $border-color;
+$text-muted: $border-color;
+$block-quote-footer-color: $border-color;
+
+
+$table-border-width: 1px;
+
+/*-- scss:rules --*/
+div.quarto-post{
+    z-index: 2;
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    padding: 10px;
+    text-shadow: 1px 1px 3px #3338;
+    border-bottom: 0px;
+    box-shadow: 10px 10px 5px #0003;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+    background-color: transparent;
+    background-image: $card-background-image;
+}
+
+div.quarto-grid-item{
+    z-index: 2;
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    text-shadow: 1px 1px 3px #3338;
+    border-bottom: 0px;
+    box-shadow: 10px 10px 5px #0003;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+    background-color: transparent;
+    background-image: $card-background-image;
+}
+
+div.cell-output-display {
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    padding: 2em;
+    text-shadow: 1px 1px 2px #3338;
+    border-bottom: 0px;
+    box-shadow: 10px 10px 5px #5553;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+    background-color: transparent;
+    background-image: linear-gradient(125deg, #DDD3, #EEE2 70%);
+    padding-bottom: 0.5em;
+  }
+  
+figcaption {
+    color: $body-color !important;
+}
+
+.input-group-text {
+    border-bottom: 1px solid $border-color;
+}
+
+blockquote {
+    border-left: .5rem solid $border-color;
+    background-color: transparent;
+    background-image: $card-background-image;
+    box-shadow: 5px 5px 3px #0003;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+}
+
+table, tbody, tfoot, tr, td {
+    border-top: revert;
+    border-bottom: revert;
+    background-image: revert;
+}
+
+.table {
+    border-top: calc($table-border-width * 3) solid $table-group-separator-color;
+    border-bottom: calc($table-border-width * 3) solid $table-group-separator-color;
+    box-shadow: 10px 10px 5px #0003;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+    // background-color: transparent;
+    // background-image: $card-background-image-lighter;
+}

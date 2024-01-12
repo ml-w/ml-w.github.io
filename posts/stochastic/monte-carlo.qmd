@@ -1,0 +1,202 @@
+---
+title: "Stochastic - Particle Filtering and Markov Chain Monte Carlo"
+author: "MLun Wong"
+date: "2017-05-11"
+categories: [stochastic, python, random, notes, monte carlo, mcmc]
+---
+
+::: callout-caution
+Under construction
+:::
+
+# Definition
+
+## Particle
+
+> A particle can be seen as an evaluation of all random variables in a joint distribution.
+
+Examples:
+
+$$\displaystyle  \text{Particle A: } [X=1, Y=2] \\ \\ \text{Particle B: } [X=3, Y=1] \\ \\ \text{where } X, Y \in  {1, 2, 3}$$
+
+## MCMC
+
+> MCMC refers to methods for randomly sample particles from a joint distribution with a Markov Chain.
+
+## Particle Filtering
+
+> Particle Filtering is also termed Sequential Monte Carlo. It refers to the process of repeatedly sampling, cast votes after each iteration based on sampled particles and modify the next sampling based on the votes in order to obtain the probability distribution of some un-observable states.
+
+Formally, let $x$ be the unobservable states and $y$ be the observable states related to $x$. Suppose we receive observations of $y$ at each time step $k$, we can write the probability based on a Markov Chain:
+
+$$\displaystyle X_k\|(X\_{k-1} =x\_{k-1}) \propto p(x_k\|x\_{k-1})$$
+
+$$\displaystyle Y_k\|(X\_{k} =x\_{k}) \propto p(y_k\|x\_{k})$$
+
+Based on Chapman-Kolmogorov Equation and Bayes Theorem, the conditional probability distribution of latent states $x$ based on priori knowledge $y$ is:
+
+$$\displaystyle p(x_k\|y\_{1:k}) \propto p(y_k\|x_k)\int_k p(x_k\|x\_{k-1})p(x\_{k-1}\|Y\_{1:K-1})$$
+
+# MCMC Methods
+
+## Gibbs Sampling
+
+::: psuedo-code
+```{psuedo-code}
+#| label: alg-quicksort
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Quicksort}
+\begin{algorithmic}
+\Procedure{Quicksort}{$A, p, r$}
+  \If{$p < r$}
+    \State $q = $ \Call{Partition}{$A, p, r$}
+    \State \Call{Quicksort}{$A, p, q - 1$}
+    \State \Call{Quicksort}{$A, q + 1, r$}
+  \EndIf
+\EndProcedure
+\Procedure{Partition}{$A, p, r$}
+  \State $x = A[r]$
+  \State $i = p - 1$
+  \For{$j = p, \dots, r - 1$}
+    \If{$A[j] < x$}
+      \State $i = i + 1$
+      \State exchange
+      $A[i]$ with     $A[j]$
+    \EndIf
+    \State exchange $A[i]$ with $A[r]$
+  \EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+```
+
+**Unknown:** Joint distribution \$P(X_1, X_2, \dots, X_n) \$
+
+**Known:** Conditional Probability \$P(X_i\|\vec{X}\_{others}) \$
+
+**Goal:** Obtain an estimation of the joint distribution
+
+Steps:
+
+1.  Choose an initial value  $X\^0_i$ for the variable of interest.
+
+2.  Compute distribution by randomly fixing  "others" variable \$P(X_j\|X_i, \vec{X}\_{others}) \$ for some $j \neq i$
+
+3.  Sample from distribution to get a realization of \$X_j \$, then update the conditional probability \$P(X_i\|X_j, \vec{X}\_{others}) \$ correspondingly,
+
+4.  Sample the target
+
+5.  Do step 2 to step 3 repeatedly for all \$j \in \[1, n\] \\neq i \$ for *k* iterations.
+:::
+
+An implementation is given below:
+
+```{python}
+#| eval: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.integrate as integrate 
+import seaborn as sns 
+import tqdm.auto as auto  
+
+""" 
+This program demonstrates a two-variable Gibbs sampling iteration.  
+Suppose we are now interested in knowing P(X, Y), and both P(X|Y)  
+and P(Y|X) is known.  
+
+Variables: 
+   PX, PY: 
+        Pre-defined probability distribution of the two random variable. 
+   properties: 
+        Property of the pdf PX and PY, including the domain, resolution and a norm constant which is for plotting p.m.f  
+""" 
+
+def GenerateSamplers(): 
+    """ 
+    Creates a pair of random variables, one probability distribution is a 
+    gaussian mixture, another is a simple gaussian with mean 0 and sd 10.  
+    Domain of the sample is set to -10 to 10  
+    :return [lambda: sample1, lambda: sample2: 
+    """ 
+    # Properties settings 
+    resolution = 500 # 2000 partitions between whole domain 
+    domain = [-10, 10] 
+    gm = {'means': [-1, 2, -4], 'sds': [0.4, 8, 3], 'weight': [0.1, 0.6, 0.3]} 
+    gy = {'means': 0, 'sds': 2}  
+    # define a normed gaussian 
+    def Gaussian(mean, var, x): 
+        return 1 / (var * np.sqrt(2 * np.pi)) * np.exp(-0.5 * (x - mean) ** 2 / var ** 2)  
+    
+    w = np.linspace(domain[0], domain[1], resolution)  
+    
+    # Generate pdf w/o normalization 
+    _PX = lambda x: np.sum([gm['weight'][i]*Gaussian(gm['means'][i], gm['sds'][i], x) for i in range(len(gm['means']))], axis=0)  
+        _PY = lambda x: Gaussian(gy['means'], gy['sds'], x)  
+    
+    # Normalization 
+    PX = lambda x: _PX(x) / integrate.quad(_PX, domain[0], domain[1])[0] # quad return mean, sd 
+    PY = lambda x: _PY(x) / integrate.quad(_PY, domain[0], domain[1])[0]   
+    
+    # Create sampler functions 
+    properties = {
+        'resolution': resolution, 
+        'domain': domain, 
+        'normConstant': (domain[1] - domain[0])/float(resolution - 1)
+    } 
+    return PX, PY, properties
+
+'''main'''
+PX, PY, properties = GenerateSamplers() 
+w = np.linspace(
+    properties['domain'][0], 
+    properties['domain'][1], 
+    properties['resolution']
+)  
+ P_joint = lambda x: PX(x[0]) * PY(x[1]) 
+ PYcX = lambda x, y: P_joint((x, y)) / PX(x) # We somehow know this, here it is the arithmetic form, it could be established 
+ PXcY = lambda x, y: P_joint((x, y)) / PY(y) # with other methods (e.g., empirically estimated)      
+ samples = [] 
+ x_k = float(np.random.choice(w)) # Initial sample 
+ for k in auto.trange(25000): 
+
+  # Sample y_k based on X_k of the last iteration 
+
+  _nPYcX = PYcX(x_k, w).sum() # normalize factor, for entertaining choice 
+
+  y_k = np.random.choice(w, p=PYcX(x_k, w)/_nPYcX, size=1) # sample from new probability distribution 
+
+   
+
+  # Now do it for x_k 
+
+  _nPXcY = PXcY(w, y_k).sum() 
+
+  x_k = np.random.choice(w, p=PXcY(w, y_k)/_nPXcY, size=1) 
+
+  samples.append((float(x_k), float(y_k))) # Record the sample       
+ # Plotting 
+ samples = np.stack(samples) 
+ joint_pdf = lambda x: PX(x[0]) * PY(x[1]) # This is what we are trying to estimate  
+ joint_mesh = np.meshgrid(w, w) 
+ fig, ax = plt.subplots(1, 1, figsize=(6, 6)) 
+ CS = ax.contour(joint_mesh[0], joint_mesh[1], joint_pdf(joint_mesh), alpha=0.6, label="Estimated $P(X,Y)$")      
+ ax.scatter(samples[:, 0], samples[:, 1], s=2, alpha=0.2) 
+ ax.legend() 
+ plt.show() 
+ 
+```
+
+The result is the following figure, where the sampled points are in blue and the contour of the joint distribution $P(X, Y)$ is drawn:
+
+# Reference
+
+> http://cs.stanford.edu/\~ppasupat/a9online/1300.html
