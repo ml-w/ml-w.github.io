@@ -1,5 +1,5 @@
 ---
-title: "Stochastic - Particle Filtering and Markov Chain Monte Carlo"
+title: "Medical imaging orientation in VTK and ITK"
 author: "MLun Wong"
 date: "2017-03-10"
 categories: [DICOM, NIFTI, image orientation, vtk, itk]
@@ -9,9 +9,9 @@ categories: [DICOM, NIFTI, image orientation, vtk, itk]
 ::: serif-content
 # Background
 
-Directions and orientation of medical images are indeed a very confusing problem, especially when you are trying to handle multiple images (then relative spacing becomes a concern). There are also **multiple conventions** to view these image (e.g. neurologist view and radiologist view, which defines the righthandness of the image), adding further confusions to the problem.
+Directions and orientation of medical images are indeed a very confusing problem, especially when you are trying to handle multiple images (then relative spacing becomes a concern). There are also **multiple conventions** to view these image (e.g. neurologist view and radiologist view, which defines the right-handness of the image), adding further confusions to the problem.
 
-For most volume storage format,  a list of the most important components which defines a meaning image would be:
+For most volume storage format, there are four elements that define the scanned object and its physical location:
 
 1.  Voxel data
 
@@ -21,9 +21,9 @@ For most volume storage format,  a list of the most important components which 
 
 4.  Direction
 
-These data are usually stored separately to maximize storage efficiency. Voxel data is always along Euclidean xyz-axises, which might not accurately represents the actual physical location each pixel. For instance, imagine you gave a metal bar two CT scans, one with it aligned perfectly with the machine's rotational axis, the second with it purposely tilted 60° from the axis. The most effective way to store these two image is obviously by drawing the grid with the z-axis along the bar so that the **voxel data** stored is actually identically. However, we need to account for the 60° tilt of the second bar, which is achieved by specifying **direction** of the image. Similar though experiment goes with **image origin**, you get the idea?
+These data are usually stored in the header of the scan files. Voxel intensity array is always stored in `ijk` space, which might not accurately represents the actual physical location each pixel. Additionally, direct mapping of `ijk` space to Cartesian `xyz` space can be ineffective in terms of storage. For instance, imagine you gave a metal bar two CT scans, one with it aligned perfectly with the machine's rotational axis, the second with it purposely tilted 60° from the axis. The most effective way for the scanner to store these two images digitally is obviously by drawing the grid with the z-axis along the bar so that the **voxel data** stored is actually identically. However, we need to account for the 60° tilt of the second scan. This is achieved by specifying the **direction** of the image. Similar rationale for the other attributes mentioned.
 
-This post tries to give a simplified explanation and solution to this problem for ITK and VTK users.
+This post aims to analyze the data structure of two commonly used data format, DICOM and Nifty, in storing direction and physical information that maps `ijk` indices to `xyz` coordinates. Additionally, I will also look into two renowned toolkits, `ITK` and `VTK`, which are frequently used for handling medical images.
 
 # Image Formats
 
@@ -31,11 +31,11 @@ We consider only two of the most commonly seen medical image format, namely **NI
 
 ## Image loading methods
 
-Three loading methods are considered in this post:
+Three loading methods you will likely use at some point are considered in this post:
 
 1.  Load as ITK image.
 
-2.  Load as ITK image then use convert to vtkImageData.
+2.  Load as ITK image using `ImageToVTKImageFilter` then convert it to vtkImageData.
 
 3.  Load as vtkImageData.
 
@@ -55,7 +55,13 @@ Tabulating their characters w.r.t. image directions:
 
 ### Image Orientation
 
-> Image orientation refers to the specification of the three principle axis w.r.t. voxel index. First, we introduce a notion, +*x* means the x-coordinate increase with the first index *i* of the voxel., similar for +*y* and +*z*. A more common notion would be the permutation of six direction LR, SP and AP, e.g. RAI/LPS...etc. This, however, doesn't defines the image  xyz-axis yet since they can be along any directions. Therefore, we requires the definition of **Image Direction**.
+> Image orientation refers to the specification of the three principle axis w.r.t. voxel `ijk` indices. A common notion used in radiology would be the permutation of six direction Left/Right (LR), Superior/Inferior (SI) and Anterior/Posterior (AP), e.g. RAI/LPS...etc., marking whether positive `xyz` move towards which of the above 6 directions. This, however, doesn't fully defines the image's `xyz`-axis yet and this only gives people a rough idea what is the "closest" orientation the `xyz` axis are pointing at. For example, an RAI image means that increase in $i, j, k$ indices moves towards right, anterior and inferior direction, but they does not necessarily points directly to it. An image with a direction $i$ mapping to Cartesian vector $\vec{x} = [0.9, 0.1, 0]$ will merit it to take "R" as this vector points dominantly towards $x$.
+
+In summary, image orientation can be seen as the definition of a matrix that maps `ijk` to `xyz`:
+
+$$
+\vec{v}_{xyz}=M\vec{v}_{ijk}
+$$
 
 # Data Storage Format
 
@@ -85,9 +91,7 @@ Tabulating their characters w.r.t. image directions:
 
 Generally DICOM can be seen as a series of 2D images with extra information stored in headers. However, an image can be sliced along different normals, for example sagital, coronal or axial. These three direction are not the only direction that a DICOM series can take on, in fact, a DICOM series can be sliced along any directions. The slice direction is decided by the  "**Image Orientation (Patient) (0020,0037)**" DICOM tag, which specify the reference frame. The "**Image Orientation(Patient)"** is a 6-element tuple consist of two vectors which *describes the axis of the direction for row and column of that particular slice.* For example, if your slices are Axial slice, then the two vectors defines sagital and coronal directions.
 
-If the tag is **"a**\b\c\d\e\f\g", then the cross product of the two vectors gives the third colume of the rotational matrix, i.e:
-
-If the corresponding axis vectors will be
+If the tag is in the format `[a\b\c\d\e\f]`, then its most likely two flattened 3-vectors. The cross product of the two vectors gives the third column of the rotational matrix, i.e:
 
 $$
 \begin{align} 
@@ -98,7 +102,9 @@ $$
 
 ## NIFTI
 
-To properly load the image data, we first examine the qform and sform code, that perform action according the the conditions below.
+Nifti stands for Neuroimaging Informatics Technology Initiative. It was initially designed to store brain MRI data. It is very suitable for dealing with 3D data because, unlike DICOM, the images from the same scan series are stored in a single file instead of multiple files.
+
+The metadata of Nifti contains necessary information to establish the physical location of the patient during his/her scan. To properly load the image data, we first examine the qform and sform code, that perform action according the the conditions below.
 
 **If qform = 0**
 
@@ -124,7 +130,9 @@ $$  a^2 + b^2 + c^2 + d^2 = 1$$
 
 So having three of the four values gives the remaining one. In nifti format, only b, c, d are given in the header, and we calculate a by the formula:
 
-\$ \displaystyle a = \sqrt{1 - b^2 - c^2 - d^2} \$
+$$
+a = \sqrt{1 - b^2 - c^2 - d^2}
+$$
 
 Using a, b, c, d the rotational matrix **R** is defined as:
 
@@ -139,7 +147,7 @@ $$
 The index to physical position formula would therefore be:
 
 $$ \displaystyle
-\vec{r} = \text{R}_q [\vec{s}^{\text{ }T}\cdot \vec{I}\] + \vec{q}_0\
+\vec{r} = \text{R}_q [\vec{s}^{\text{ }T}\cdot \vec{I}] + \vec{q}_0\
 $$
 
 where **q_0** stands for qoffsets.

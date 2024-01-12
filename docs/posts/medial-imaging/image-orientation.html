@@ -9,7 +9,7 @@
 <meta name="author" content="MLun Wong">
 <meta name="dcterms.date" content="2017-03-10">
 
-<title>Computer vision, biostatistics, and AI in Radiology - Stochastic - Particle Filtering and Markov Chain Monte Carlo</title>
+<title>Computer vision, biostatistics, and AI in Radiology - Medical imaging orientation in VTK and ITK</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -415,7 +415,7 @@ a^2 + b^2 - c^2 - d^2&amp;2bc - 2ad&amp;2bd+2ac&amp;q_x\\
 </section>
 <section id="code-example-vtk-python" class="level3">
 <h3 class="anchored" data-anchor-id="code-example-vtk-python">Code Example (VTK &amp; Python)</h3>
-<div id="812276b6" class="cell" data-execution_count="1">
+<div id="8f755460" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> vtk</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
@@ -474,7 +474,7 @@ a^2 + b^2 - c^2 - d^2&amp;2bc - 2ad&amp;2bd+2ac&amp;q_x\\
 </section>
 <section id="fix" class="level1">
 <h1>Fix</h1>
-<div id="837f28fa" class="cell" data-execution_count="2">
+<div id="776dedc5" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Spacing</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> image.GetSpacing()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> np.array([s[<span class="dv">0</span>], s[<span class="dv">1</span>], s[<span class="dv">2</span>], <span class="dv">1</span>])</span>
