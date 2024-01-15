@@ -3,6 +3,7 @@
 
 $body-color: #ddd;
 $primary: #2248;
+$secondary: rgba(#fff, .4);
 $body-bg-image: linear-gradient(43deg, #222245 0%, #661160 57%, #773c03 100%);
 
 $code-block-bg: #3337;
@@ -25,3 +26,5 @@ div.quarto-post {
 blockquote {
   color: tint-color($body-color, 20%) !important;
 }
+
+

@@ -10,6 +10,19 @@ $block-quote-footer-color: $border-color;
 
 $table-border-width: 1px;
 
+$mermaid-bg-color: $secondary;
+$mermaid-edge-color: $border-color;
+$mermaid-node-fg-color: $body-color;
+$mermaid-fg-color: $body-color;
+$mermaid-fg-color--lighter: lighten($body-color, 10%);
+$mermaid-fg-color--lightest: lighten($body-color, 20%);
+$mermaid-font-family: sans-serif;
+$mermaid-label-bg-color: $secondary;
+$mermaid-label-fg-color: $primary;
+$mermaid-node-bg-color: $secondary;
+$mermaid-node-fg-color: $body-color;
+
+
 /*-- scss:rules --*/
 div.quarto-post{
     z-index: 2;
