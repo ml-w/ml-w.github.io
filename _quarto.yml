@@ -22,7 +22,10 @@ format:
       styles.css
     header-includes: |
       <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    include-in-header:
+      - file: assets/script_header.html
     mainfont: Roboto
+    # html-math-method: katex
 
 editor: visual
 

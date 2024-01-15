@@ -74,3 +74,15 @@ div.quarto-grid-item {
 .psuedo-code {
   font-family: "Georgia";
 }
+
+.math.display {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.edgeLabel {
+  display: block;
+  padding: 0px 5px;
+  border-radius: 2px;
+}

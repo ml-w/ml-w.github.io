@@ -17,7 +17,7 @@ $mermaid-fg-color: $body-color;
 $mermaid-fg-color--lighter: lighten($body-color, 10%);
 $mermaid-fg-color--lightest: lighten($body-color, 20%);
 $mermaid-font-family: sans-serif;
-$mermaid-label-bg-color: $secondary;
+$mermaid-label-bg-color: rgba($secondary, 0.8);
 $mermaid-label-fg-color: $primary;
 $mermaid-node-bg-color: $secondary;
 $mermaid-node-fg-color: $body-color;
