@@ -10,17 +10,17 @@ $block-quote-footer-color: $border-color;
 
 $table-border-width: 1px;
 
-$mermaid-bg-color: $secondary;
-$mermaid-edge-color: $border-color;
-$mermaid-node-fg-color: $body-color;
-$mermaid-fg-color: $body-color;
-$mermaid-fg-color--lighter: lighten($body-color, 10%);
-$mermaid-fg-color--lightest: lighten($body-color, 20%);
-$mermaid-font-family: sans-serif;
-$mermaid-label-bg-color: rgba($secondary, 0.8);
-$mermaid-label-fg-color: $primary;
-$mermaid-node-bg-color: $secondary;
-$mermaid-node-fg-color: $body-color;
+$mermaid-bg-color: $secondary !default;
+$mermaid-edge-color: $border-color !default;
+$mermaid-node-fg-color: $body-color !default;
+$mermaid-fg-color: $body-color !default;
+$mermaid-fg-color--lighter: lighten($body-color, 10%) !default;
+$mermaid-fg-color--lightest: lighten($body-color, 20%) !default;
+$mermaid-font-family: sans-serif !default;
+$mermaid-label-bg-color: rgba($secondary, 0.8) !default;
+$mermaid-label-fg-color: $primary !default;
+$mermaid-node-bg-color: $secondary !default;
+$mermaid-node-fg-color: $body-color !default;
 
 
 /*-- scss:rules --*/
@@ -106,3 +106,14 @@ table, tbody, tfoot, tr, td {
     background-color: transparent;
     background-image: linear-gradient(125deg, rgba(255, 255, 255, 0.707), rgba(255, 255, 255, 0.402) 85%);
 }
+
+.edgeLabel {
+    display: block;
+    backdrop-filter: blur(16px);
+    padding: 0px 5px;
+    border-radius: 2px;
+    box-shadow: 10px 10px 5px #0003;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+    background-color: transparent;
+    background-image: $card-background-image;
+  }

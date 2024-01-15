@@ -3,7 +3,7 @@
 
 $body-color: #ddd;
 $primary: #2248;
-$secondary: rgba(#fff, .4);
+$secondary: rgba(#fff, .8);
 $body-bg-image: linear-gradient(43deg, #222245 0%, #661160 57%, #773c03 100%);
 
 //Code 
@@ -19,7 +19,14 @@ $card-background-image-lighter: linear-gradient(125deg, rgba(255, 255, 255, 0.20
 $table-group-separator-color: $body-color;
 $table-group-separator-color-lighter: shade-color($table-group-separator-color, 10%);
 
+//mermaid
+$mermaid-label-bg-color: transparent;
+$mermaid-label-fg-color: $secondary;
+$mermaid-node-bg-color: $primary;
+$mermaid-node-fg-color: $secondary;
 
+
+/*-- scss:rules --*/
 div.callout-style-default > .callout-header {
   color: shade-color($primary, 50%);
 }

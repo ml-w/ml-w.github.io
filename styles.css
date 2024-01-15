@@ -80,9 +80,3 @@ div.quarto-grid-item {
   overflow-x: auto;
   overflow-y: hidden;
 }
-
-.edgeLabel {
-  display: block;
-  padding: 0px 5px;
-  border-radius: 2px;
-}
