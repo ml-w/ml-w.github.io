@@ -3,6 +3,7 @@
     "listing": "/index.html",
     "items": [
       "/posts/fourier-transform/discrete-fourier-transform.html",
+      "/posts/programming/torch/torchio-ddp.html",
       "/posts/IT/headless-server.html",
       "/posts/fourier-transform/index.html",
       "/posts/stochastic/monte-carlo.html",

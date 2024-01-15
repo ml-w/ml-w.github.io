@@ -1,0 +1,244 @@
+---
+title: "PyTorch DDP with torchio"
+author: "MLun Wong"
+date: "2024-01-10"
+categories: [python, ddp, pytorch, torchio]
+image: torchio-ddp.jpg
+format:
+    html:
+        toc: true
+# Logic of distributed sampler
+---
+
+::: serif-content
+# Background
+
+## Distributed data parallel (DDP)
+
+**Distributed Data Parallel (DDP)** is an enhancement to PyTorch's `DataParallel`, allowing for efficient batch distribution across multiple GPUs and machines. DDP introduces model parallelism, enabling parts of a model to be housed on separate GPUs within the same process while distributing data across all processes. This is particularly beneficial for models too large for a single GPU, though a batch size of one is generally not recommended for best performance.
+
+DDP stands out by enabling the sharing of model parameters and data across different machines. Additionally, it supports synchronized batch normalization, a significant improvement over `DataParallel`. While `DataParallel` calculates batch normalization for each GPU's data in isolation, DDP updates batch normalization parameters considering all samples in the batch, regardless of their GPU distribution.
+
+::: callout-note
+Note that for model parallel, the advantages is not apparent because the reason someone would like to distribute his/her model across GPU is going to be because of GRAM issue. If you can't fit your model into one GPU for batch-size 1, you are not going to do any better fitting it into multiple-GPUs because the bottle-neck is small batch-size.
+:::
+
+## `Torchio` and its issue with DDP
+
+[TorchIO](https://torchio.readthedocs.io/) is a package for image I/O with torch, in particular 3D medical image volumes. It can load images with a pre-defined configuration with augmentations that is common to MRI such as adding bias-field, ghosting, noise...etc. Currently, its loading mechanism is simple like this:
+
+```{mermaid}
+%%| layout-align: center
+%%| fig-cap: Fig 1. `torchio` sampling logic
+%%| output-location: column
+flowchart LR
+    Sub[(Subjects)] --> sam[Sampler] --> empty{Queue\nEmpty?}
+    empty --> |yes|sam
+  empty --> |no|pop["pop()"]
+```
+
+This does not work with `DDP` well. The vanilla `DsitributedSampler` in `torch` basically has a key `__iter__()` function that returns indices. The indices are the same for all instances created in the same way. This means that the distribution requires the whole dataset to be defined before initiating the DDP threads.
+
+```{mermaid}
+%%| layout-align: center
+%%| fig-cap: Fig 2. `DDP` sampling logic
+flowchart TD
+    Sub[(Subjects)] --> sp[Samples] --> Samplers
+    sp --> ddp(DDP) --> im[Indices Mapping] --> Samplers
+    Samplers --> th1[Thread 1 Samples] & th2[Thread 2 Samples] & th3[Thread 3 Samples]
+   
+```
+
+This goes against `torchio` logic, which samples from the subjects on the run to fill up a queue, and pop the element when `torch.DataLoader` requests them. The `tio.Sampler` will work in the background to fill up the `tio.Queue` when its empty. This means there are no fix indices such that naive indices mapping and it will not work properly with `DistributedSampler` because one is call `next()` and the other is calling `get_item()`.
+
+# Attempt solution
+
+The `tio.Queue` should have a multi-processing wrapper class that has a shared patch pool. Only the queue with `rank = 0` should call `_generate_patches()` or `_fill()` when the patch pool is empty. All the MP queues then refences the same patch pool based on a fixed index mapping. The patch pool discards a patch only when all the MP queues have accessed the patch.
+
+```{mermaid}
+%%| layout-align: center
+%%| fig-cap: Fig 3. `tio.Queue` for DDP
+flowchart TD
+    DDPController --> |spawn|DDPThread --> |create|q["tio.Queue"]
+    DDPThread --> |create if rank == 0|Samplers[tio.Samplers] & im[/DDP indices map/]
+    Samplers --> |push patches|q
+    q --> emp{Empty} ---> |"<b>Yes</b><br>signal rank 0 sampler"|Samplers
+    Sub[(Subjects)] --> |provide data|Samplers
+    im --> |request data|q
+    emp ---> |<b>No|return["Pop() Return Patch"] --> End
+```
+
+The `tio.Queue` should be a shuffled list of patches. The DDP rank `i` thread should get the i-th element from the shared `tio.Queue` pool. When all the queues got their patches, the queue should pop the elements that were released.
+
+After each epoch, the shared pool is shuffled to ensure each GPU optimizer sees the entire dataset.
+
+## Challenges
+
+-   The `pop()` was called at random sequence multiple times (number of times equal to batch size)
+-   If I write a function wrapping solver and multiprocess the `fit` function, it is needed to write it such that only the first process does validation loop.
+-   Current CFG system does not allow dynamically changing attributes
+-   There is a problem where if the data changes (i.e., new subjects are added or some are removed), the `Sampler` in `torchio` needs to be reconfigured with new indices. This can be a cumbersome and time-consuming process, especially if the data changes frequently.
+-   These operations should not be repeated and should only run once:
+    -   Validation loop
+    -   Saving best checkpoint
+    -   Evaluating early stopping criteria
+    -   Triggers `tio.Queue` sampling
+
+# Implemented solution
+
+I implemented wrappers for the class instance `SolverBase`, `DataLoaderBase`, and `DataSetBase` classes to replace some of the original functions with DDP versions. This allows for the parallelization of model training across multiple GPUs or nodes, improving both the speed and efficiency of the training process.
+
+## Modify `torchio`
+
+See [this fork](https://github.com/alabamagan/torchio/commit/821869b17e617fbd19c51b2e7d36bb79c9f7e0ac?diff=unified&w=1) for details of the changes made.
+
+In summary, the `tio.Queue` class is inherited to implement the `tio.QueueDDP` class, which reload the subjects based on the rank of the the current process.
+
+``` python
+import torch
+import torch.distributed as dist
+from torch.utils.data import DistributedSampler
+from .queue import Queue
+from .. import NUM_SAMPLES
+from .dataset import SubjectsDataset
+from .sampler import PatchSampler
+from .subject import Subject
+
+from typing import Optional
+
+class QueueDDP(Queue):
+    r"""Wrapper for distributed training.
+
+    This class wraps :class:`~torchio.data.Queue` and add two key arguements for DDP.
+    Namely the `num_of_replicas`, which often is the world size and also `rank`, which
+    dictates the behavior of the loader. Note that the argument `start_background` is disabled.
+
+    Args:
+        num_of_replicas:
+            The number of queue that will be running parallelly. Default to the value returned
+            by :func:`torch.distributed.get_world_size`.
+        rank:
+            The rank of the queue instance. Default to the value returned by :func:`torch.distributed.
+            get_rank`.
+
+    See Also:
+        For other initialization arguments, please see: :class:`~torch.data.Queue`
+
+    """ # noqa: E501
+    def __init__(self,
+                 subjects_dataset  : SubjectsDataset,
+                 max_length        : int,
+                 samples_per_volume: int,
+                 sampler           : PatchSampler,
+                 num_workers       : int             = 0,
+                 shuffle_subjects  : bool            = True,
+                 shuffle_patches   : bool            = True,
+                 start_background  : bool            = True,
+                 verbose           : bool            = False,
+                 num_of_replicas   : Optional[int]   = None,
+                 rank              : Optional[int]   = None,
+                 ):
+        super(QueueDDP, self).__init__(subjects_dataset,
+                                       max_length,
+                                       samples_per_volume,
+                                       sampler,
+                                       num_workers,
+                                       shuffle_subjects,
+                                       shuffle_patches,
+                                       False, # start_background doesn't work here
+                                       verbose,
+                                       )
+        if not dist.is_initialized():
+            msg = "This class should always be used for distributed training. However, " \
+                  "DDP doesn't seem to have been activated."
+            raise RuntimeError(msg)
+
+        self.num_of_replicas = num_of_replicas or dist.get_world_size()
+        self.rank = rank or dist.get_rank()
+
+        # separate original
+        self.subjects_dataset = SubjectsDataset(
+            subjects_dataset._subjects[self.rank:len(subjects_dataset):self.num_of_replicas],
+            transform = subjects_dataset._transform
+        )
+```
+
+## Usage of `tio.QueueDDP`
+
+``` python
+import torch
+import torchio as tio
+from torch.utils.data import DataLoader
+from torchio.data import UniformSampler
+from torchio.utils import create_dummy_dataset
+import os
+import torch.distributed as dist
+import torch.multiprocessing as mp
+
+"""Configurations"""
+host = 'localhost'
+port = '23455'
+backbone = `nccl`
+world_size = 4 # make sure this is less than your GPU count
+
+
+def ddp_helper(rank, subjects, world_size, num_workers=0) -> tio.QueueDDP:
+    # kick start ddp
+    os.environ['MASTER_ADDR'] = host
+    os.environ['MASTER_PORT'] = port
+    dist.init_process_group(backbone, world_size=world_size, rank=rank)
+
+    # Setup torch sampler
+    subject_dataset = tio.SubjectsDataset(subjects)
+    patch_size = 10
+    sampler = UniformSampler(patch_size)
+
+    # Set up DDP Queue
+    queue_dataset = tio.QueueDDP(
+        subjects_dataset,
+        max_length=6,
+        samples_per_volume=2,
+        sampler=sampler,
+        num_workers=num_workers,
+        num_of_replicas=world_size,
+        rank=rank
+    )
+
+    # Demonstrate loader 
+    _ = str(queue_dataset)
+    batch_loader = DataLoader(queue_dataset, batch_size=4, drop_last=True)
+    for batch in batch_loader:
+        # <replace with your training code>
+        _ = batch['one_modality'][tio.DATA]
+        _ = batch['segmentation'][tio.DATA]
+    dist.destroy_process_group()
+    return queue_dataset
+
+def main():
+    subjects_list = create_dummy_dataset(
+        num_images = 10, 
+        size_range = (10, 20), 
+        directory = ".", 
+        suffix = '.nii', 
+        force=False
+    )
+    
+    #! define environment
+    for i in range(world_size):
+        mp.spawn(ddp_helper, args=(subjects_list, backbone, world_size, 4,), nprocs=world_size)
+```
+
+## Remaining challenges
+
+### Randomness of DDP queue
+
+This implementation is not quite what we want yet because each GPU now has its own set of subjects. partition. If this order is not changed for each epoch then each GPU is going to be dealing with the same group of patients. Although theoretically it makes no differences if you are using synchronized batchnorm, the underlying side effects could limit the convergence. Therefore, one should shuffle the subjects and rebuild the queue after each epoch as a work around for this problem.
+:::
+
+# (To be continue)
+
+-   MPI issues
+
+-   Using DDP with GuildAI
+
+-   Using SyncBatchNorm which requires DDP

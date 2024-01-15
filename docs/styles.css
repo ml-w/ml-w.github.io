@@ -9,7 +9,7 @@ nav.navbar {
 }
 
 body {
-  font-family: Roboto, Sans-Serif;
+  /* font-family: Roboto, Sans-Serif; */
   background-image: transparent;
   background-color: transparent;
   background-repeat: no-repeat;
@@ -73,4 +73,10 @@ div.quarto-grid-item {
 
 .psuedo-code {
   font-family: "Georgia";
+}
+
+.math.display {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
