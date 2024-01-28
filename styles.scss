@@ -129,7 +129,11 @@ table, tbody, tfoot, tr, td {
     background-image: $card-background-image;
   }
 
-  figcaption {
+figcaption {
     margin: auto;
     text-align: center;
-  }
+}
+
+div.callout.callout-style-default>.callout-header {
+    color: $body-color;
+}

@@ -25,6 +25,12 @@ $mermaid-label-fg-color: $secondary;
 $mermaid-node-bg-color: $primary;
 $mermaid-node-fg-color: $secondary;
 
+// $callout-color-info: #f00;
+// $callout-color-warning: #f00;
+// $callout-color-note: #f00;
+// $callout-color-caution: #f00;
+
+
 
 /*-- scss:rules --*/
 div.callout-style-default > .callout-header {
@@ -40,3 +46,22 @@ blockquote {
 }
 
 
+div.callout-note.callout-style-default>.callout-header {
+  background-color: rgba(shade-color($callout-color-note, 80%), 50%);
+}
+
+div.callout-warning.callout-style-default>.callout-header {
+  background-color: rgba(shade-color($callout-warning,80%), 50%);
+}
+
+div.callout-tip.callout-style-default>.callout-header {
+  background-color: rgba(shade-color($callout-tip,80%), 50%);
+}
+
+div.callout-important.callout-style-default>.callout-header {
+  background-color: rgba(shade-color($callout-important,80%), 50%);
+}
+
+div.callout-caution.callout-style-default>.callout-header {
+  background-color: rgba(shade-color($callout-color-caution,80%),50%);
+}
