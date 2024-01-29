@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/medial-imaging/intensity-normalization-toc.html",
       "/posts/fourier-transform/discrete-fourier-transform.html",
       "/posts/programming/torch/torchio-ddp.html",
       "/posts/IT/headless-server.html",

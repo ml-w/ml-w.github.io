@@ -80,3 +80,7 @@ div.quarto-grid-item {
   overflow-x: auto;
   overflow-y: hidden;
 }
+
+.animation {
+  display: block !important;
+}
