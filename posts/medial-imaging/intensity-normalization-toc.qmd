@@ -1,0 +1,150 @@
+---
+title: "Intensity normalization - General Info"
+author: "MLun Wong"
+date: "2024-01-22"
+categories: [DICOM, normalization, imaging]
+format:
+  html:
+    toc: true
+# jupyter: conda-env-vtk-py
+---
+
+# Introduction
+
+The quantitative analysis of medical images is predicated on a fundamental assumption: the properties being analyzed are consistent across different patients, thereby allowing patterns identified within one patient group to be applicable to another without the need for transformation. In practice, however, this assumption is frequently violated due to a multitude of environmental variables that are challenging to control, including temperature, pressure, exposure to light, level of magnetism, air circulation ...etc. In the field of genomics, the influence of such variations is acknowledged as the "batch effect," referring to the inherent systematic biases in each batch of DNA sequencing data that are unrelated to the histological or pathological features of interest. Although imaging lacks a specific term for this phenomenon, it is subject to a comparable effect, compounded by additional physical constraints inherent to the imaging techniques themselves.
+
+Take, for instance, the MRI weighted sequences. The intensities of MRI T1-weighted and T2-weighted images are described as "weighted" precisely because they do not maintain a consistent correlation with a fixed intensity scale. As a result, identical tissue types may exhibit variable intensity values across different scans. Contrastingly, CT imaging does not typically reflect this issue, as the intensities in CT images are anchored to the physical densities of the scanned objects and are denoted in Hounsfield Units (HU). Despite this, CT imaging is not entirely immune to environmental influences.
+
+Given these challenges, normalizing the intensity of medical images becomes an integral step prior to any quantitative analysis. Such normalization ensures that the patterns discerned from one cohort of patients can be validly extended to another, enhancing the reliability and translatability of the findings.
+
+# General idea for intensity normalization
+
+## Assumption of a reference standard
+
+-   Voxels sharing identical intensity values within a single image should maintain their equivalence in intensity following the normalization process.
+
+-   Identical tissues should exhibit consistent intensity values both within the same scanner and across different scanners when the same or equivalent sequences are used.
+
+```{=html}
+<details> <summary><b>Advance discussion</b></summary>
+```
+::: callout-tip
+We mentioned we think that the same type of tissue should show up with the same value in MRI scans, but people are different, and so is their tissue. Some tissues, like brain tissue, don't vary much between people, so brain scan values are pretty consistent and well-adjusted in neuroscience studies. But for other tissues, like tumors, each one is unique. We can't assume they're all the same. We don't have a solid reference to confirm if our assumptions about tissue values are right or wrong. What matters most is if adjusting these values helps us better understand and measure the features we see in scans. So, it's important to be flexible with these assumptions.
+:::
+
+</details>
+
+## Histogram-based intensity mapping
+
+Most intensity normalization algorithms complies with the first assumption would aim to create an intensity mapping. Formally, normalization is the process of finding a map between the instance distribution (histogram) $d[I(x), v]$ to the reference distribution $\mathscr{D}(v)$:
+
+$$
+\text{Normalizaiton}[I(x)]: d[I(x), v]\mapsto D(v)
+$$
+
+where $d[I(x), v]$ is the distribution of image $I(x)$ and $x\in X$ with $X$ being the domain where the Image is defined.
+
+```{python}
+#| echo: false
+# importing library under the hood
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage.io import imread
+from skimage.color import rgb2gray
+
+```
+
+```{python}
+#| echo: false
+#| label: fig-lena-histogram
+#| fig-cap: Example of histogram of gray-scale Lena transformed
+
+def intensity_mapping(x):
+  return (x - x.mean()) * 0.5
+  
+# Load lenna
+lena = rgb2gray(imread("../fourier-transform/lena.png")[:, :, :3])
+
+# Get histogram
+lena_initial_hist, bins = np.histogram(lena, bins=50)
+
+# Transform intensity and get histogram again
+lena_transformed, bins_2 = np.histogram(intensity_mapping(lena), bins=50)
+
+# Plot
+plt.plot(bins[:-1] + (bins[1:] - bins[:-1]) / 2., lena_initial_hist, label="Original")
+plt.plot(bins_2[:-1] + (bins_2[1:] - bins_2[:-1]) / 2., lena_transformed, label="Transformed")
+plt.title("Histogram of Lena.png")
+plt.xlabel("Bins")
+plt.ylabel("Counts")
+plt.legend()
+plt.show()
+```
+
+## Methodologies
+
+There are really many ways to construct the histogram mapping, most commonly involve linear mapping and piecewise-linear mapping.
+
+### Linear mapping
+
+Linear mapping is easy to understand, it means the the same transform is applied across the entire intensity domain. This normalize the tissue value of the foreground tissues to have a standardized mean of $\mu$ and a variance of $\sigma$:
+
+$$
+I'_{ij}=\frac{I_{ij} - \mu}{\sigma}
+$$
+
+where $I_{ij}$ is the intensity at index $(i,j)$.
+
+#### Deciding $\mu$ and $\sigma$
+
+The main idea of this linear mapping is to shift, expand or compress the entire histogram. You would have do decide how based on the property of the scanned tissues. Here are some common choices.
+
+##### Z-score normalization
+
+The mean and variance can be arbitrarily defined. When we set $\mu=\text{E}|\textbf{I}(X)|$ and $\sigma = \text{Var}[\textbf{I}(X)]$; $X\subset U$ is the domain of foreground tissues in the image, this become **Z-score normalization**, which sets all images' mean and variance to 0 and 1, respectively. This corresponds to the `StandardScaler` in the package `sklearn`. Note that `sklearn` does not deal with foreground tissue masks.
+
+Alternatively, you can also chose to reference the averaged foreground intensity across the entire batch, i.e., calculating $\mu$ and $\sigma$ from the entire dataset. This averages the mean and variance across all data.
+
+##### Min-max scaling
+
+This aims to scale the minimal and maximum intensity value in each image to be a fixed range, say $[a, b],b>a$. Then we can set $\mu=\min[\textbf{I}(X)]$ and $\sigma=\{\max[\textbf{I}(X)] - \min[\textbf{I}(X)]\}/ (b -a)$. The `MinMaxScaler` in `sklearn` is similar, but not exactly the same. The main difference being that `MinMaxScaler` scales the range to between 0 to 1, the case presented here is more general and scales the range to between $a$ and $b$.
+
+::: {.callout-caution appearance="simple"}
+This method is very sensitive to outliers. You should make sure the outliers are cleaned if you want to use this method directly. `MinMaxScaler` does not perform this clean automatically.
+:::
+
+##### IQR scaling
+
+Scales the histogram based on location of the quartiles to specific values $[a, b], b>a$. Simply set $\mu=Q[\textbf{I}(X), 0.25]$ and
+
+$$
+\sigma=\frac{Q[\textbf{I}(X),0.75] - Q[\textbf{I}(X),0.25]}{b-a}
+$$
+
+This method moves median to 0 and the IQR to $[a, b]$. This is suitable for images with very skewed histogram and with distinct outliers. Again, this does not remove the outliers for you.
+
+Note that this does guarantee the median to be scaled to 0. If you wish to do so, you can set $\mu=\text{Median}[\text{I}(X)]$, and scaling to a value based on IQR.
+
+------------------------------------------------------------------------
+
+### Piece-wise linear mapping
+
+Now the above linear mappings mainly cater for histogram with roughly a normal distribution. This is often not the case. As you can see in the histogram of lena @fig-lena-histogram, there are plenty of peaks at different locations. Now if we assume these peaks in different people represents the same set of tissues, because of the contrast between tissues is consistent, we can further align the peaks to normalize the image. This requires shifts of the histogram at different peak locations, hence, piece-wise linear mapping means the intensity domain is partitioned into multiple segments, and different linear transform is applied to these segments.
+
+$$
+\begin{matrix}
+I'(X_i)=N_i[I(X_i)] & \forall i\in \mathbb{Z}^+, x_i\in X, & \text{where } x_i \leq x <x_{i+1}
+\end{matrix}
+$$
+
+$I'(X_i)$ is the normalized image corresponding to normalization of domain $X_i$, i.e., the $i$-th segment in the intensity profile, and $N_i(.)$ is the normalization operation for the $i$-th segment.
+
+Piece-wise mapping allows for a better fit of histogram, but also risk distorting the contrast. Therefore, the linear mapping used for each segment needs to be designed carefully. This usually involve referencing the specific imaging modality of interest.
+
+# Modality-specific normalization
+
+There are no general method for intensity normalization because different medical image modalities has different intrinsic physics invovled.
+
+## MRI
+
+See [Intensity normalization - MRI](./intensity-normalization-mri.qmd)
