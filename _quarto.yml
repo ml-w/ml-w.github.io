@@ -11,8 +11,12 @@ website:
       - about.qmd
       - icon: github
         href: https://github.com/ml-w
-      - icon: twitter
-        href: https://twitter.com
+      - icon: mortarboard
+        text: Google Scholar
+        href: https://scholar.google.com/citations?user=JNKeB6cAAAAJ&hl=en
+      - icon: person-circle
+        text: Academic Page
+        href: http://www.diir.cuhk.edu.hk/profile/mr-wong-lun-matthew
 format:
   html:
     theme: 
@@ -25,6 +29,8 @@ format:
     include-in-header:
       - file: assets/script_header.html
     mainfont: Roboto
+    highlight-style: ayu
+  
     # html-math-method: katex
 
 editor: visual

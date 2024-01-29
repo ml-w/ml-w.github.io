@@ -67,3 +67,8 @@ div.callout-important.callout-style-default>.callout-header {
 div.callout-caution.callout-style-default>.callout-header {
   background-color: rgba(shade-color($callout-color-caution,80%),50%);
 }
+
+div.sourceCode {
+  box-shadow: 2px 2px 1px #0003;
+  box-shadow: inset 1px 1px rgba($primary, 0.2), inset -1px -1px rgba($primary, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+}

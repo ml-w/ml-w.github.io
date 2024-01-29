@@ -8,7 +8,7 @@ $border-color: tint-color($body-color, 30%);
 // $border-width: 5px;
 
 $body-bg-image: linear-gradient(70deg, rgba(181,181,214,1) 0%, rgba(237,234,209,1) 31%, rgba(231,200,200,1) 100%);
-$code-block-bg: #AAA6;
+$code-block-bg: rgba(221, 221, 221, 0.4);
 
 // Table border is difficult to mess with
 $table-group-separator-color: $body-color;
@@ -26,4 +26,9 @@ $link-color: #c58e3b;
 .input-group {
   border: none !important; 
   
+}
+
+div.sourceCode {
+  box-shadow: 2px 2px 1px #0003;
+  box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
 }
