@@ -25,6 +25,8 @@ $mermaid-label-fg-color: $secondary;
 $mermaid-node-bg-color: $primary;
 $mermaid-node-fg-color: $secondary;
 
+$link-color: #f8ae40;
+
 // $callout-color-info: #f00;
 // $callout-color-warning: #f00;
 // $callout-color-note: #f00;
@@ -51,15 +53,15 @@ div.callout-note.callout-style-default>.callout-header {
 }
 
 div.callout-warning.callout-style-default>.callout-header {
-  background-color: rgba(shade-color($callout-warning,80%), 50%);
+  background-color: rgba(shade-color($callout-color-warning,80%), 50%);
 }
 
 div.callout-tip.callout-style-default>.callout-header {
-  background-color: rgba(shade-color($callout-tip,80%), 50%);
+  background-color: rgba(shade-color($callout-color-tip,80%), 50%);
 }
 
 div.callout-important.callout-style-default>.callout-header {
-  background-color: rgba(shade-color($callout-important,80%), 50%);
+  background-color: rgba(shade-color($callout-color-important,80%), 50%);
 }
 
 div.callout-caution.callout-style-default>.callout-header {
