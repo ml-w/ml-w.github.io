@@ -1,7 +1,7 @@
 ---
 title: "Intensity normalization - General Info"
 author: "MLun Wong"
-date: "2024-01-22"
+date: "2024-01-26"
 categories: [DICOM, normalization, imaging]
 format:
   html:
@@ -143,7 +143,7 @@ Piece-wise mapping allows for a better fit of histogram, but also risk distortin
 
 # Modality-specific normalization
 
-There are no general method for intensity normalization because different medical image modalities has different intrinsic physics invovled.
+There are no general method for intensity normalization because different medical image modalities has different intrinsic physics involved.
 
 ## MRI
 

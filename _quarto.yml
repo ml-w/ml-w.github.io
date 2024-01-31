@@ -12,10 +12,8 @@ website:
       - icon: github
         href: https://github.com/ml-w
       - icon: mortarboard
-        text: Google Scholar
         href: https://scholar.google.com/citations?user=JNKeB6cAAAAJ&hl=en
       - icon: person-circle
-        text: Academic Page
         href: http://www.diir.cuhk.edu.hk/profile/mr-wong-lun-matthew
 format:
   html:

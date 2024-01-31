@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="MLun Wong">
-<meta name="dcterms.date" content="2024-01-22">
+<meta name="dcterms.date" content="2024-01-26">
 
 <title>Computer vision, biostatistics, and AI in Radiology - Intensity normalization - General Info</title>
 <style>
@@ -143,15 +143,15 @@ window.Quarto = {
 </i> 
 <span class="menu-text"></span></a>
   </li>  
-  <li class="nav-item">
+  <li class="nav-item compact">
     <a class="nav-link" href="https://scholar.google.com/citations?user=JNKeB6cAAAAJ&amp;hl=en"> <i class="bi bi-mortarboard" role="img">
 </i> 
-<span class="menu-text">Google Scholar</span></a>
+<span class="menu-text"></span></a>
   </li>  
-  <li class="nav-item">
+  <li class="nav-item compact">
     <a class="nav-link" href="http://www.diir.cuhk.edu.hk/profile/mr-wong-lun-matthew"> <i class="bi bi-person-circle" role="img">
 </i> 
-<span class="menu-text">Academic Page</span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -174,7 +174,6 @@ window.Quarto = {
   <li><a href="#general-idea-for-intensity-normalization" id="toc-general-idea-for-intensity-normalization" class="nav-link" data-scroll-target="#general-idea-for-intensity-normalization">General idea for intensity normalization</a>
   <ul class="collapse">
   <li><a href="#assumption-of-a-reference-standard" id="toc-assumption-of-a-reference-standard" class="nav-link" data-scroll-target="#assumption-of-a-reference-standard">Assumption of a reference standard</a></li>
-  <li><a href="#identify-a-mapping-for-intensity-normalization" id="toc-identify-a-mapping-for-intensity-normalization" class="nav-link" data-scroll-target="#identify-a-mapping-for-intensity-normalization">Identify a mapping for intensity normalization</a></li>
   <li><a href="#histogram-based-intensity-mapping" id="toc-histogram-based-intensity-mapping" class="nav-link" data-scroll-target="#histogram-based-intensity-mapping">Histogram-based intensity mapping</a></li>
   <li><a href="#methodologies" id="toc-methodologies" class="nav-link" data-scroll-target="#methodologies">Methodologies</a>
   <ul class="collapse">
@@ -216,7 +215,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 22, 2024</p>
+      <p class="date">January 26, 2024</p>
     </div>
   </div>
   
@@ -258,25 +257,13 @@ Tip
 </div>
 </details>
 </section>
-<section id="identify-a-mapping-for-intensity-normalization" class="level2">
-<h2 class="anchored" data-anchor-id="identify-a-mapping-for-intensity-normalization">Identify a mapping for intensity normalization</h2>
-<p>Formally, normalization is the process of finding a map between the instance distribution <span class="math inline">\(d[I(x), v]\)</span> to the reference dsitribution <span class="math inline">\(\mathscr{D}(v)\)</span>:</p>
+<section id="histogram-based-intensity-mapping" class="level2">
+<h2 class="anchored" data-anchor-id="histogram-based-intensity-mapping">Histogram-based intensity mapping</h2>
+<p>Most intensity normalization algorithms complies with the first assumption would aim to create an intensity mapping. Formally, normalization is the process of finding a map between the instance distribution (histogram) <span class="math inline">\(d[I(x), v]\)</span> to the reference distribution <span class="math inline">\(\mathscr{D}(v)\)</span>:</p>
 <p><span class="math display">\[
 \text{Normalizaiton}[I(x)]: d[I(x), v]\mapsto D(v)
 \]</span></p>
 <p>where <span class="math inline">\(d[I(x), v]\)</span> is the distribution of image <span class="math inline">\(I(x)\)</span> and <span class="math inline">\(x\in X\)</span> with <span class="math inline">\(X\)</span> being the domain where the Image is defined.</p>
-<p>Now consider everybody is unique, it is not probably to assume everyone’s intensity distribution must fit perfectly to the same reference standard. There should be constrains that is supported by the physical properties of the tissue:</p>
-<p><span class="math display">\[
-\arg\min_{\lambda} d[\text{Normalization}[I(x);\lambda], v] - D(v)
-\]</span></p>
-<p><span class="math display">\[
-\text{Subjected to: } f[I(x), \lambda] = 0
-\]</span></p>
-<p>Where <span class="math inline">\(\lambda\)</span> is the normalization parameters and <span class="math inline">\(f(I, \lambda)\)</span> is arbitrary constrain.</p>
-</section>
-<section id="histogram-based-intensity-mapping" class="level2">
-<h2 class="anchored" data-anchor-id="histogram-based-intensity-mapping">Histogram-based intensity mapping</h2>
-<p>Most intensity normalization algorithms complies with the first assumption would aim to create an intensity mapping <span class="math inline">\(N(\textbf{M}):=I\mapsto J\)</span>, <span class="math inline">\(I\)</span> is the domain (intensity range) of input image batch and <span class="math inline">\(J\)</span> is the normalized intensity domain, <span class="math inline">\(\textbf{M}\)</span> is the input image batch for normalization.</p>
 <div id="cell-fig-lena-histogram" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div id="fig-lena-histogram" class="quarto-figure quarto-figure-center quarto-float anchored">
@@ -312,25 +299,27 @@ I'_{ij}=\frac{I_{ij} - \mu}{\sigma}
 </section>
 <section id="min-max-scaling" class="level5">
 <h5 class="anchored" data-anchor-id="min-max-scaling">Min-max scaling</h5>
-<p>This aims to scale the minimal and maximum intensity value in each image to be a fixed range, say <span class="math inline">\([a, b]\)</span>. Then we can set <span class="math inline">\(\mu=[\max(\textbf{I}) - \min(\textbf{I})]/2\)</span> and <span class="math inline">\(\sigma=\text{Var}[\textbf{I}] / (b -a)\)</span>.</p>
+<p>This aims to scale the minimal and maximum intensity value in each image to be a fixed range, say <span class="math inline">\([a, b],b&gt;a\)</span>. Then we can set <span class="math inline">\(\mu=\min[\textbf{I}(X)]\)</span> and <span class="math inline">\(\sigma=\{\max[\textbf{I}(X)] - \min[\textbf{I}(X)]\}/ (b -a)\)</span>. The <code>MinMaxScaler</code> in <code>sklearn</code> is similar, but not exactly the same. The main difference being that <code>MinMaxScaler</code> scales the range to between 0 to 1, the case presented here is more general and scales the range to between <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>.</p>
 <div class="callout callout-style-simple callout-caution">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>This method is very sensitive to outliers. You should make sure the outliers are cleaned if you want to use this method.</p>
+<p>This method is very sensitive to outliers. You should make sure the outliers are cleaned if you want to use this method directly. <code>MinMaxScaler</code> does not perform this clean automatically.</p>
 </div>
 </div>
 </div>
 </section>
 <section id="iqr-scaling" class="level5">
 <h5 class="anchored" data-anchor-id="iqr-scaling">IQR scaling</h5>
-<p>Scales the histogram based on location of the quartiles. Simply set <span class="math inline">\(\mu=\text{median}[\textbf{I}(X)]\)</span> and</p>
+<p>Scales the histogram based on location of the quartiles to specific values <span class="math inline">\([a, b], b&gt;a\)</span>. Simply set <span class="math inline">\(\mu=Q[\textbf{I}(X), 0.25]\)</span> and</p>
 <p><span class="math display">\[
-\sigma=\frac{\text{Var}[\textbf{I}(X)]}{Q[\textbf{I}(X),0.75] - Q[\textbf{I}(X),0.25]}
+\sigma=\frac{Q[\textbf{I}(X),0.75] - Q[\textbf{I}(X),0.25]}{b-a}
 \]</span></p>
-<p>This method moves median to 0 and the IQR to <span class="math inline">\([-0.5, 0.5]\)</span>. This is suitable for images with very skewed histogram and with a lot of outliers.</p>
+<p>This method moves median to 0 and the IQR to <span class="math inline">\([a, b]\)</span>. This is suitable for images with very skewed histogram and with distinct outliers. Again, this does not remove the outliers for you.</p>
+<p>Note that this does guarantee the median to be scaled to 0. If you wish to do so, you can set <span class="math inline">\(\mu=\text{Median}[\text{I}(X)]\)</span>, and scaling to a value based on IQR.</p>
+<hr>
 </section>
 </section>
 </section>
@@ -343,13 +332,13 @@ I'(X_i)=N_i[I(X_i)] &amp; \forall i\in \mathbb{Z}^+, x_i\in X, &amp; \text{where
 \end{matrix}
 \]</span></p>
 <p><span class="math inline">\(I'(X_i)\)</span> is the normalized image corresponding to normalization of domain <span class="math inline">\(X_i\)</span>, i.e., the <span class="math inline">\(i\)</span>-th segment in the intensity profile, and <span class="math inline">\(N_i(.)\)</span> is the normalization operation for the <span class="math inline">\(i\)</span>-th segment.</p>
-<p>Piece-wise mapping allows for a better</p>
+<p>Piece-wise mapping allows for a better fit of histogram, but also risk distorting the contrast. Therefore, the linear mapping used for each segment needs to be designed carefully. This usually involve referencing the specific imaging modality of interest.</p>
 </section>
 </section>
 </section>
 <section id="modality-specific-normalization" class="level1">
 <h1>Modality-specific normalization</h1>
-<p>There are no general method for intensity normalization because different medical image modalities has different intrinsic physics invovled.</p>
+<p>There are no general method for intensity normalization because different medical image modalities has different intrinsic physics involved.</p>
 <section id="mri" class="level2">
 <h2 class="anchored" data-anchor-id="mri">MRI</h2>
 <p>See <a href="../../posts/medial-imaging/intensity-normalization-mri.html">Intensity normalization - MRI</a></p>
