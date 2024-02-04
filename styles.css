@@ -84,3 +84,8 @@ div.quarto-grid-item {
 .animation {
   display: block !important;
 }
+
+.column-margin {
+  text-align: justify !important;
+  font-size: 8pt;
+}
