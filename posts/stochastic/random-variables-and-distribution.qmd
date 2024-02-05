@@ -1,0 +1,108 @@
+---
+title: "Random variables, Probability and Stochastic system"
+author: "MLun Wong"
+date: "29/01/2017"
+categories: [stochastic, random, probability]
+image: "images/random_var.png"
+draft: true
+format:
+    html:
+        mainfont: "Georgia"
+---
+
+# Random variables
+
+Random variables can be see as a mathematical tools that describes random events that occurs with an underlying probability distribution. Event is an abstract idea, but you can see it as an instant where the variable $X$ is realized and takes a value. Let's set fair coin tossing, a classic example, as random variable $X$. This random variable takes the value of $\{0, 1\}$ at each coin toss, the "event", and its probability distribution is non-zero on only two points:
+
+$$
+P(X=x)=
+\begin{cases}
+0.5 & x=0 \\
+0.5 & x=1 \\
+0 & \text{otherwise}
+\end{cases}
+$$ Now its not that interesting to discuss $X$ itself, its really just a symbol. Whats more important is the characteristics of the oncoming "events" that evaluate $X$, i.e., the next coin toss. So based on $P(X=x)$, what can we know about the coin toss?
+
+## Statistical properties of random variables
+
+### Basics
+
+Two common operations to understand the random variable are the expected value $\text{E}|.|$, also often referred to as the mean, and variance $\text{Var}(.)$. With known probability profile $P(X)$ of random variable $X$ the expected value $\text{E}[X]$ can be obtained by:
+
+$$
+\text{E}[X]=\int_\Omega x \cdot P(X=x)dx
+$$
+
+where $\Omega$ is domain of $X$, i.e., the possible values $X$ can take. And the variance can be obtained by
+
+$$
+\operatorname{Var}(X) = \operatorname{E}\left[(X - \operatorname{E}[X])^2\right]
+$$
+
+::: callout-note
+Continuous and discrete random variables has distinct properties, but most of the equations are common. You just need to change from integral to summations so to speak. However, you should note their distinct differences.
+:::
+
+### Probability density function
+
+This is essentially the probability distribution.
+
+$$
+\operatorname{PDF}[X]:pdf(x)=P(X=x); x\in \Omega
+$$
+
+::: {.callout-tip appearance="simple"}
+For discrete random variable, this is called the *Probability Mass Function*.
+:::
+
+It's summation across the entire domain should always be 1:
+
+$$
+\int_\Omega pdf(x)dx=1
+$$
+
+And it is always positive:
+
+$$
+pdf(x) \geq0, \forall x\in Omega
+$$
+
+### Cumulative density function
+
+This is the cumulative addition of the PDF
+
+$$
+\operatorname{CDF}[X]=cdf(x)=\int_{-\infty}^xpdf(z)dz
+$$
+
+::: {.callout-tip appearance="simple"}
+For discrete variable, its form is:
+
+$$
+\sum_{z\in\Omega, z<x}pmf(z)
+$$
+:::
+
+### Moment
+
+The *k-th* moment of the variable $X$ is the expected value of $X^k$. The *k-th* **standardized** moment of $X$ is $(X-\operatorname{E}[X])^k/\operatorname{Var}[X]^k$.
+
+Note that the 3-rd standardized moment is the skewness, and 4-th standardized moment is the kurtosis of the distribution.
+
+### Useful Identities
+
+> $$ \operatorname{Var}(X)=\operatorname{E}\left[X^2 \right] - \operatorname{E}[X]^2 =  \operatorname{E}\left[(X - \operatorname{E}[X])^2\right] $$
+
+# Dependent variables
+
+Many real world variables are dependent to each other, especially in biology. For example, if we let high blood pressure status as $X$ and high blood cholesterol level be $Y$, you can quickly inference there's interdependencies between these two variables. To be more specific, a variable is said to be dependent to another if the realization of the later affects the probability distribution of the former. This can be represented by conditional probability, with the notion $P(A|B)$ representing the probability of event $A$ after occurring when event $B$ is observed.
+
+## Conditional Probability
+
+$$
+P(A|B)= \frac{P(A\cap B)}{P(B)}
+$$
+
+If we have a sequence of dependent variables, such as in the case of predicting the changes of blood pressure throughout a month, we have a serious of random variables $X = \{X_i;\forall i \in [0, N] \cup\mathbb{Z}\}$. This becomes the
+
+###

@@ -1,5 +1,5 @@
 ---
-title: "Intensity normalization - MRI"
+title: "Intensity normalization (Part 2) - MRI"
 author: "MLun Wong"
 date: "2024-01-26"
 categories: [DICOM, normalization, imaging, MRI, python]
@@ -8,8 +8,9 @@ format:
     toc: true
 reference-location: margin
 citation-location: margin
-draft: true
-jupyter: conda-env-data_analysis-py
+footnote-location: margin
+draft: false
+# jupyter: conda-env-data_analysis-py
 ---
 
 ::: callout-caution
@@ -18,7 +19,7 @@ Under construction
 
 # About MRI
 
-Principle of MRI can be easily found on the internet, and I have also showed some simple code to simulate spin relaxation based on Bloch equation in [this post](./imaging-mri.ipynb). You should have already know that some MRI sequences do not represent intensities in an absolute scale like in CT. In this post I will cover intensity normalization of MRI for quantitative analysis.
+Principle of MRI can be easily found on the internet, and I have also showed some simple code to simulate spin relaxation based on Bloch equation in [this post](../imaging-mri.ipynb). You should have already know that some MRI sequences do not represent intensities in an absolute scale like in CT. In this post I will cover intensity normalization of MRI for quantitative analysis.
 
 ## Weighted sequence
 
@@ -58,12 +59,20 @@ While the physical factors fosters the inter-scanner reproducibility of intensit
 
 # Intensity normalization for MRI
 
-Apart from the standard normalization techniques covered in the [previous post](./intensity-normalization-toc.qmd), there are some techniques specifically designed to normalize MRI. I will go over some of the well-established method in this post, categorized based on scan region.
+Apart from the standard normalization techniques covered in the [previous post](./01_intensity-normalization-toc.qmd), there are some techniques specifically designed to normalize MRI. I will go over some of the well-established method in this post, categorized based on scan region.
 
 ## Neuro
 
 There is a long history quantitative analysis of the brain using MRI scans. I would say with some confidence that normalization of MRI is most established for MRI brain scans. This is because the white-matter and gray-matter contrast is relatively more consistent between people when compared to other structures such as fat and muscles. Majority of the method developed for normalizing brain scan is based on white- and gray-matter contrast.
 
 ### Nyul Normalization
+
+One of the most utilized method in Nero for normalization is Nyúl normalization, which is essentially a piecewise linear transform with reference to the histogram peaks representing white- and gray-matter of neural tissues.
+
+::: column-margin
+Nyúl, L. G., Udupa, J. K., & Zhang, X. (2000). New variants of a method of MRI scale standardization. IEEE transactions on medical imaging, 19(2), 143-150.
+:::
+
+This method works best with a brain mask, but it is not absolutely necessary. Essentially, the histogram is
 
 For this purpose I have developed a toolkit [MRI Normalization Tools (`mnts`)](https://github.com/alabamagan/mri_normalization_tools) to improve repeatability.

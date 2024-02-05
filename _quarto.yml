@@ -15,6 +15,23 @@ website:
         href: https://scholar.google.com/citations?user=JNKeB6cAAAAJ&hl=en
       - icon: person-circle
         href: http://www.diir.cuhk.edu.hk/profile/mr-wong-lun-matthew
+  page-navigation: true
+  page-footer: "Copyright 2024, MLun Wong"
+  sidebar:
+    contents: auto
+
+          # - medical-imaging/intensity-normalization/*
+      # - section: "Programming"
+      #   contents: 
+      #     - auto: programming/*
+        # contents: 
+        #   - section: posts/medical-imaging/*
+        #   - section: "Intensity Normalization"
+        #     contents: posts/medical-imaging/intensity-normalization/*
+
+    style: "docked"
+    border: false
+
 format:
   html:
     theme: 
@@ -28,9 +45,9 @@ format:
       - file: assets/script_header.html
     mainfont: Roboto
     highlight-style: ayu
-  
     # html-math-method: katex
-
+    # grid:
+    #   sidebar-width: 0px
 editor: visual
 
 execute:

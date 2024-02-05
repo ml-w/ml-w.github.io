@@ -1,5 +1,5 @@
 ---
-title: "Intensity normalization - General Info"
+title: "Intensity normalization (Part 1) - General Info"
 author: "MLun Wong"
 date: "2024-01-26"
 categories: [DICOM, normalization, imaging]
@@ -63,7 +63,7 @@ def intensity_mapping(x):
   return (x - x.mean()) * 0.5
   
 # Load lenna
-lena = rgb2gray(imread("../fourier-transform/lena.png")[:, :, :3])
+lena = rgb2gray(imread("../../MISC/fourier-transform/lena.png")[:, :, :3])
 
 # Get histogram
 lena_initial_hist, bins = np.histogram(lena, bins=50)
@@ -147,4 +147,4 @@ There are no general method for intensity normalization because different medica
 
 ## MRI
 
-See [Intensity normalization - MRI](./intensity-normalization-mri.qmd)
+See [Intensity normalization - MRI](./02_intensity-normalization-mri.qmd)

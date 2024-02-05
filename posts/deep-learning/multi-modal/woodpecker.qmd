@@ -1,0 +1,129 @@
+---
+title: "Narrative review - Reducing hallucination in MMLLM"
+author: "MLun Wong"
+date: "2024-02-04"
+categories: [multi-modal, MMLLM, hallucination]
+format:
+  html:
+    toc: true
+    mainfont: "Georgia"
+reference-location: margin
+citation-location: margin
+draft: false
+bibliography: "woodpecker.bib"
+# jupyter: conda-env-data_analysis-py
+---
+
+# Background
+
+Hallucination refers to when a multi-modal generative models hallucinates about the input and generate text with fake description that is not associated with the input image (@fig-hallucination-eg).
+
+::: {#fig-hallucination-eg}
+![](images/hallucination.png){.fig-background height="400"}
+
+Example of hallucination by a multi-modal model. Extracted from [@yin2023].
+:::
+
+These hallucination is more common in smaller models with less than 100B parameters, and is currently a huge challenge because training these model requires cooperate-level resources. As an individual researcher, these sort of resources is not that easy to obtain. Therefore, understanding hallucination is essential to decentralize the technology advancement of multi-modal language models (MMLM). This post is a narrative review looking at current studies that are working towards solving hallucination in MMLLM. I referenced the [awesome-mmllmm list](https://github.com/Atomic-man007/Awesome_Multimodel_LLM) for some noted studies.
+
+## Cause of hallucination
+
+While hallucination is a well-known phenomenon, our understanding of its root cause is limited. Most believe this is merely a limitation of the lack of trainable parameters and can be solved by increasing model size. This is true to some extent with evidence suggesting LLM with \>100B parameters showing a much better performance and accuracy in reasoning when compared to smaller version of itself. However, LLM as big as GPT-4V with \> 175B parameters still hallucinates, so there must be more to this issue.
+
+### Gradient-based optimization
+
+One interesting study I came across on Arxiv suggests hallucination is a result of the gradient-based optimization process [@yao2023]. Essentially Yao et al. constructed rogue prompts to induce the LLM to give a designated fabricated hallucination output by optimizing the token loss of the model output with designated hallucination (without touching model parameters, just swapping input prompt tokens). They found that tokens forming text prompt will still get the designated hallucination for a 7B model (`Viculna-7B`). E.g:
+
+``` {#exm-gd .markdown}
+# Input
+/] The name enumer Mission capital city of fol ([Yes [- nazw engl Londres britannique Peru Franvera Sorry}{—(?
+
+# Output
+The name of the capital city of France is London.
+```
+
+They conclude that hallucination is a result embedded into gradient-optimization method for training LLM.
+
+```{=html}
+<details><summary><b>Advanced discussion</b></summary>
+```
+I do found their conclusion to be a bit hasted, and I frankly does not fully agree to it, but I can see the logic behind their argument. They seems to believe hallucinations are attributed to the encoder mechanisms within LLMs, which are fine-tuned through an imperfect loss function. This imperfectness can be exploited to generate prompts that, despite appearing illogical to humans, are perceived as normal by the LLM and produces hallucination output. Although they did not mentioned it in their paper, I deduced they are theorizing that one of the causes of hallucination is the proximity of semantically disparate tokens in the embedding space.
+
+I have also tried their OoD prompts in larger models including Llama-70B, it seems to perceive many of their OoD prompts from their Table 6. to be harmful language and refuse to answer.
+
+Also, I noticed a pattern where fragment of word in their OoD are actually related to the output hallucination in a somewhat flawed but not entirely illogical manner. For example, the prompt: `!?? wonderful!! Add better!!altro!!emi . Parisian` always result in response related to Paris. And it's obviously attributed to "Parisian", despite this is not a commonly used term.
+
+![Screen capture of response by Llama-70B. Although I used a model with 10x the original parameters of the model tested by the authors, I believe the OoD prompt does has logical connection with the output of the model.](images/llama-response-1.png){#fig-llama-response-1}
+
+</details>
+
+### Low-resources situations
+
+[@guerreiro2023] reports that LLM hallucinates more under low-resources situations. In other words, they pretend to know and answer with confident even though they don't. This is quite believable but is also quite obvious to people who played with a LLM chat bot for a while. I also think the few-shot, one-shot and zero-shot configuration is a testimony thatLLM performs better with more resources. Now, the lying behavior is notorious, the real question is "why" but this paper didn't really give us an explanation.
+
+The authors also showed that hallucination, in particular "Toxic" (e.g., hate speech) hallucination, occurs more frequently when the LLM is translating out of English from language with less training data.
+
+### Temperature
+
+I find it shocking that the literature does not offer much information about the association between temperature and hallucination in LLM. It seems there again not really a solid conclusion, but I read on GDELT blog \[[link](https://blog.gdeltproject.org/understanding-hallucination-in-llms-a-brief-introduction/)\] that setting to a temperature to 0, meaning always select the highest probability token, will result in more hallucination by removing the model's flexibility to escape high-probability low-relevance phrasal assemblies (i.e., frequently used term that are unrelated to the discussed subject matter). I cannot really say I fully believe this, but the author, who remained annonymus, mentioned that many AI firm suggest that setting temperature to 0 will eliminate hallucination, I stand firmly with him/her that this is not the case.
+
+------------------------------------------------------------------------
+
+# Woodpecker
+
+A group from Tecent proposed to use 5-step prompt-based technique to reduce hallucination [@yin2023]. This method does not require any fine-tunning or re-training as it's only a prompt engineering technique. It involves using carefully designed few-shot prompts to augment the original output of by the MMLLM. Here's an outline of their method @fig-woodpecker-flowchart.
+
+```{mermaid}
+%%| layout-align: center
+%%| fig-cap: Flowchart outlinging the Woodpecker method.
+%%| label: fig-woodpecker-flowchart
+
+flowchart TD
+    input(Original MLLM output) --> s1[Step 1: Key Concept Extraction] 
+    s1 --> s2[Step 2: Question formulation]
+    s2 --> s3[Step 3: Visual knowledge validation]
+    s3 --> s4[Step 4: Visual claim generation]
+    s3 --> |Bounding Box Info|image(Annotate on Image)
+    s4 --> s5[Step 5: Hallucination correction]
+    s5 --> output(Output prompt)
+```
+
+Their default base model was [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl), and their online demo was down as of the date I write this post. But I did have had a chance to play with it. It gives pretty intuitive results and the model make much more sense than the original `mplug-owl-llama-7b` . I am quite surprise to see the model is able to give pretty accurate bounding box without fine-tunning
+
+## Summary
+
+![Summary workflow of Woodpecker method extracted from the original paper. Note that the bounding box is drawn from the prompt output by visual knowledge validation step.](images/woodpecker-workflow.png){#fig-woodpecker-summary}
+
+## Prompt template
+
+The authors provides three prompt templates corresponding to their 5-step workflow. Here's a recap
+
+### Step1: Key concept extraction
+
+The target of this step is to extract the entities from the MMLLM output of concern for further verification.
+
+``` markdown
+# System message
+You are a language assistant that helps to extract information from given sentences
+
+# Prompt
+Given a sentence, extract the existent entities within the sentence for me. Extract the common objects and summarize them as general categories without repetition, merge essentially similar objects.
+Avoid extracting abstract or non-specific entities. Only extract concrete, certainly existent objects that fall in general categories and are described in a certain tone in the sentence. Extract entity in the singular form. 
+Output all the extracted types of items in one line and separate each object type with a period. If there is nothing to output, then output a single “None”.
+
+Examples:
+{In-context Examples}
+
+Sentence: 
+{Input Sentence}
+
+Output:
+```
+
+::: callout-note
+The authors did not give the specific details of the `{In-context Examples}` they noted in all of their templates on their arxiv publication, but they can be found in their github repository \[[link](https://github.com/BradyFU/Woodpecker/blob/main/models/entity_extractor.py)\].
+:::
+
+### Step 2: Question formulation
+
+This step

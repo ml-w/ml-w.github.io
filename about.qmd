@@ -22,6 +22,7 @@ format:
     mainfont: "Roboto"
     grid:
       body-width: 1024px
+sidebar: none
 ---
 
 ```{=html}
@@ -54,24 +55,24 @@ I am an academic current serving under Department of Imaging and Radiology of Th
 ::: {style="text-align: left;"}
 ## Education
 
-+--------------+------------------------------------------------------+
-| Year         | Qualification                                        |
-+==============+======================================================+
-| 2015         | **Bachelor of Science (BSc),** *\                    |
-|              | ma Physics, mi Computer Science*                     |
-|              |                                                      |
-|              | *The Chinese University of Hong Kong, HKSAR*         |
-+--------------+------------------------------------------------------+
-| 2018         | **Master of Philosophy (MPhil)**                     |
-|              |                                                      |
-|              | *Department of Imaging and Interventional Radiology\ |
-|              | The Chinese University of Hong Kong, HKSAR*          |
-+--------------+------------------------------------------------------+
-| 2021         | **Doctor of Philosophy (PhD)**                       |
-|              |                                                      |
-|              | *Department of Imaging and Interventional Radiology\ |
-|              | The Chinese University of Hong Kong, HKSAR*          |
-+--------------+------------------------------------------------------+
++---------------+------------------------------------------------------+
+| Year          | Qualification                                        |
++===============+======================================================+
+| 2015          | **Bachelor of Science (BSc),** *\                    |
+|               | ma Physics, mi Computer Science*                     |
+|               |                                                      |
+|               | *The Chinese University of Hong Kong, HKSAR*         |
++---------------+------------------------------------------------------+
+| 2018          | **Master of Philosophy (MPhil)**                     |
+|               |                                                      |
+|               | *Department of Imaging and Interventional Radiology\ |
+|               | The Chinese University of Hong Kong, HKSAR*          |
++---------------+------------------------------------------------------+
+| 2021          | **Doctor of Philosophy (PhD)**                       |
+|               |                                                      |
+|               | *Department of Imaging and Interventional Radiology\ |
+|               | The Chinese University of Hong Kong, HKSAR*          |
++---------------+------------------------------------------------------+
 
 ### Selected Publications
 
