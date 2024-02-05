@@ -21,6 +21,7 @@ $mermaid-label-bg-color: rgba($secondary, 0.8) !default;
 $mermaid-label-fg-color: $primary !default;
 $mermaid-node-bg-color: $secondary !default;
 $mermaid-node-fg-color: $body-color !default;
+$body-bg: $primary;
 
 
 /*-- scss:rules --*/
@@ -49,10 +50,24 @@ div.quarto-grid-item{
     background-image: $card-background-image;
 }
 
-div.cell-output-display:not(.column-screen-inset-shaded) {
+// div.cell-output-display:not(.column-screen-inset-shaded) {
+//     backdrop-filter: blur(6px);
+//     border-radius: 15px;
+//     padding: 2em;
+//     text-shadow: 1px 1px 2px #3338;
+//     border-bottom: 0px;
+//     box-shadow: 10px 10px 5px #5553;
+//     box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+//     background-color: transparent;
+//     background-image: linear-gradient(125deg, #DDD3, #EEE2 70%);
+//     padding-bottom: 0.5em;
+//     margin-bottom: 1em;
+// }
+
+.figure-img {
     backdrop-filter: blur(6px);
-    border-radius: 15px;
-    padding: 2em;
+    border-radius: 5px;
+    padding: 1em;
     text-shadow: 1px 1px 2px #3338;
     border-bottom: 0px;
     box-shadow: 10px 10px 5px #5553;
@@ -62,6 +77,7 @@ div.cell-output-display:not(.column-screen-inset-shaded) {
     padding-bottom: 0.5em;
     margin-bottom: 1em;
 }
+
 
 div.cell-output-display.page-full {
     border-radius: 0px;
@@ -76,6 +92,8 @@ div.cell-output-display.column-screen-inset-shaded {
  
 figcaption {
     color: $body-color !important;
+    margin: auto;
+    text-align: center;
 }
 
 .input-group-text {
@@ -129,15 +147,12 @@ table, tbody, tfoot, tr, td {
     background-image: $card-background-image;
   }
 
-figcaption {
-    margin: auto;
-    text-align: center;
-}
-
+// This is for the callout title bar text color
 div.callout.callout-style-default>.callout-header {
     color: $body-color;
 }
 
+// This is for the popup
 .tippy-box {
     backdrop-filter: blur(6px);
     border-radius: 15px;
@@ -150,4 +165,35 @@ div.callout.callout-style-default>.callout-header {
     background-image: linear-gradient(125deg, #DDD3, #EEE2 70%);
     padding-bottom: 0.5em;
     margin-bottom: 1em;
+}
+
+// This needs to be used manually with images in markdown
+img.fig-background {
+    padding: 1em;
+    backdrop-filter: blur(16px);
+    box-shadow: 10px 10px 5px #0003;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+    background-color: transparent;
+    background-image: $card-background-image-lighter;
+    border-radius: 2px;
+}
+
+// For headers
+#quarto-header {
+    font-family: "Roboto";
+}
+
+.quarto-title-block {
+    font-family: "Roboto";
+}
+
+#quarto-margin-sidebar {
+    font-family: "Roboto";
+}
+
+div.nav-footer {
+    background-color: transparent;
+    border-top: 1px solid;
+    margin-left: 1em;
+    margin-right: 1em;
 }

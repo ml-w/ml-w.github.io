@@ -2,7 +2,7 @@
 // Base document colors
 
 $body-color: #343a40;
-$primary: #2248;
+$primary: rgba(53, 24, 49, 0.616);
 $secondary: rgba(255, 255, 255, 0.765);
 $border-color: tint-color($body-color, 30%);
 // $border-width: 5px;
@@ -31,4 +31,8 @@ $link-color: #c58e3b;
 div.sourceCode {
   box-shadow: 2px 2px 1px #0003;
   box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+}
+
+div.nav-footer {
+  color: rgba($body-color,0.3);
 }
