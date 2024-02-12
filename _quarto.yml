@@ -16,21 +16,12 @@ website:
       - icon: person-circle
         href: http://www.diir.cuhk.edu.hk/profile/mr-wong-lun-matthew
   page-navigation: true
-  page-footer: "Copyright 2024, MLun Wong"
+  page-footer: "©Copyright 2024, MLun Wong"
   sidebar:
     contents: auto
-
-          # - medical-imaging/intensity-normalization/*
-      # - section: "Programming"
-      #   contents: 
-      #     - auto: programming/*
-        # contents: 
-        #   - section: posts/medical-imaging/*
-        #   - section: "Intensity Normalization"
-        #     contents: posts/medical-imaging/intensity-normalization/*
-
-    style: "docked"
+    style: "floating"
     border: false
+    background: none
 
 format:
   html:
@@ -43,8 +34,9 @@ format:
       <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     include-in-header:
       - file: assets/script_header.html
-    mainfont: Roboto
     highlight-style: ayu
+    mainfont: Consolas
+    fig-align: center
     # html-math-method: katex
     # grid:
     #   sidebar-width: 0px

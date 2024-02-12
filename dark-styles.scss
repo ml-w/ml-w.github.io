@@ -35,10 +35,6 @@ $link-color: #f8ae40;
 
 
 /*-- scss:rules --*/
-div.callout-style-default > .callout-header {
-  color: shade-color($primary, 50%);
-}
-
 div.quarto-post {
   text-shadow: 2px 3px 3px #3338 !important;
 }
@@ -48,26 +44,6 @@ blockquote {
 }
 
 
-div.callout-note.callout-style-default>.callout-header {
-  background-color: rgba(shade-color($callout-color-note, 80%), 50%);
-}
-
-div.callout-warning.callout-style-default>.callout-header {
-  background-color: rgba(shade-color($callout-color-warning,80%), 50%);
-}
-
-div.callout-tip.callout-style-default>.callout-header {
-  background-color: rgba(shade-color($callout-color-tip,80%), 50%);
-}
-
-div.callout-important.callout-style-default>.callout-header {
-  background-color: rgba(shade-color($callout-color-important,80%), 50%);
-}
-
-div.callout-caution.callout-style-default>.callout-header {
-  background-color: rgba(shade-color($callout-color-caution,80%),50%);
-}
-
 div.sourceCode {
   box-shadow: 2px 2px 1px #0003;
   box-shadow: inset 1px 1px rgba($primary, 0.2), inset -1px -1px rgba($primary, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
@@ -76,3 +52,29 @@ div.sourceCode {
 div.nav-footer {
   color: rgba(255, 255, 255, 0.24);
 }
+
+// callout headers
+div.callout-style-default > .callout-header {
+  color: $body-color !important;
+}
+
+// div.callout-note.callout-style-default>.callout-header {
+//   background-color: rgba(shade-color($callout-color-note, 80%), 50%);
+// }
+
+// div.callout-warning.callout-style-default>.callout-header {
+//   background-color: rgba(shade-color($callout-color-warning,80%), 50%);
+// }
+
+// div.callout-tip.callout-style-default>.callout-header {
+//   background-color: rgba(shade-color($callout-color-tip,80%), 50%);
+// }
+
+// div.callout-important.callout-style-default>.callout-header {
+//   background-color: rgba(shade-color($callout-color-important,80%), 50%);
+// }
+
+// div.callout-caution.callout-style-default>.callout-header {
+//   background-color: rgba(shade-color($callout-color-caution,80%),50%);
+// }
+// callout headers end

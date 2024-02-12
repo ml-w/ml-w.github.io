@@ -22,7 +22,7 @@ format:
     mainfont: "Roboto"
     grid:
       body-width: 1024px
-sidebar: none
+sidebar: false
 ---
 
 ```{=html}

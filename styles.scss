@@ -50,20 +50,6 @@ div.quarto-grid-item{
     background-image: $card-background-image;
 }
 
-// div.cell-output-display:not(.column-screen-inset-shaded) {
-//     backdrop-filter: blur(6px);
-//     border-radius: 15px;
-//     padding: 2em;
-//     text-shadow: 1px 1px 2px #3338;
-//     border-bottom: 0px;
-//     box-shadow: 10px 10px 5px #5553;
-//     box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
-//     background-color: transparent;
-//     background-image: linear-gradient(125deg, #DDD3, #EEE2 70%);
-//     padding-bottom: 0.5em;
-//     margin-bottom: 1em;
-// }
-
 .figure-img {
     backdrop-filter: blur(6px);
     border-radius: 5px;
@@ -136,16 +122,6 @@ table, tbody, tfoot, tr, td {
     background-image: linear-gradient(125deg, rgba(255, 255, 255, 0.707), rgba(255, 255, 255, 0.402) 85%);
 }
 
-.edgeLabel {
-    display: block;
-    backdrop-filter: blur(16px);
-    padding: 0px 5px;
-    border-radius: 2px;
-    box-shadow: 10px 10px 5px #0003;
-    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
-    background-color: transparent;
-    background-image: $card-background-image;
-  }
 
 // This is for the callout title bar text color
 div.callout.callout-style-default>.callout-header {
@@ -178,6 +154,10 @@ img.fig-background {
     border-radius: 2px;
 }
 
+img.figure-img {
+    padding: 0.5em;
+}
+
 // For headers
 #quarto-header {
     font-family: "Roboto";
@@ -197,10 +177,51 @@ img.fig-background {
     font-size: 5pt ;
 }
 
-
 div.nav-footer {
     background-color: transparent;
     border-top: 1px solid;
     margin-left: 1em;
     margin-right: 1em;
 }
+
+nav.quarto-secondary-nav:not(.sidebar) {
+    background-color: $primary;
+    backdrop-filter: blur(6px);
+}
+
+// #quarto-sidebar.sidebar:not(sidebar-item) {
+//     transition: .2s
+// }
+
+// #quarto-sidebar.sidebar:not(sidebar-item):hover {
+//     background-color: $primary;
+//     backdrop-filter: blur(6px);
+//     transition: .2s;
+// }
+
+div#quarto-sidebar-glass.show {
+    background-color: $primary;
+    backdrop-filter: blur(10px);
+}
+
+// Mermaid
+.cluster rect {
+    fill: unset !important;
+}
+
+.edgeLabel {
+    display: block;
+    z-index: 5000;
+    backdrop-filter: blur(16px);
+    padding: 0px 5px;
+    border-radius: 2px;
+    box-shadow: 10px 10px 5px #0003;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+    // background-color: #EEE5 !important;
+    background-color: transparent;
+    background-image: $card-background-image;
+    line-height: 1.5em;
+    text-shadow: 2px 2px 2px #000A;
+    text-shadow: inset 2px 2px 2px #0008;
+  }
+// Mermaid end

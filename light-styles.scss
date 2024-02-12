@@ -23,6 +23,10 @@ $gray-300: $border-color;
 $link-color: #c58e3b;
 
 /*-- scss: rules --*/
+div.callout-style-default > .callout-header {
+  color: $body-color !important; 
+}
+
 .input-group {
   border: none !important; 
   
@@ -35,4 +39,9 @@ div.sourceCode {
 
 div.nav-footer {
   color: rgba($body-color,0.3);
+}
+
+// callout headers
+div.callout-style-default > .callout-header {
+  color: $secondary !important;
 }

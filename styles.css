@@ -6,6 +6,7 @@ div.quarto-post {
 nav.navbar {
   border-bottom: 5px solid;
   border-color: #aa3360;
+  backdrop-filter: blur(6px);
 }
 
 body {
@@ -95,4 +96,33 @@ div.quarto-grid-item {
 
 #ref {
   background-color: unset;
+  border-left: none;
+}
+
+h2#references {
+  background-color: unset;
+  border-left: none;
+  padding-left: unset;
+}
+
+#quarto-appendix.default {
+  background-color: transparent;
+}
+
+div.csl-entry {
+  margin-top: 1em;
+  font-size: 8pt;
+}
+
+.code-annotation-gutter {
+  width: 2.5em;
+}
+
+.code-annotation-gutter-bg {
+  width: 2.5em;
+}
+
+/* Set table at center */
+.quarto-float-tbl {
+  text-align:center;
 }
