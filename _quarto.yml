@@ -16,7 +16,7 @@ website:
       - icon: person-circle
         href: http://www.diir.cuhk.edu.hk/profile/mr-wong-lun-matthew
   page-navigation: true
-  page-footer: "©Copyright 2024, MLun Wong"
+  page-footer: "© MLun Wong, 2024 "
   sidebar:
     contents: auto
     style: "floating"
@@ -37,6 +37,7 @@ format:
       - file: assets/script_header.html
     highlight-style: ayu
     fig-align: center
+    mainfont: Roboto
     # html-math-method: katex
     # grid:
     #   sidebar-width: 0px
