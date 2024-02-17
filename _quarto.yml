@@ -32,10 +32,12 @@ format:
       styles.css
     header-includes: |
       <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&display=swap" rel="stylesheet">
     include-in-header:
       - file: assets/script_header.html
     highlight-style: ayu
     fig-align: center
+    mainfont: Roboto
     # html-math-method: katex
     # grid:
     #   sidebar-width: 0px
