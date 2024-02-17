@@ -6,7 +6,7 @@ categories: [transformer, bert, NLP, review, lvm]
 format:
   html:
     toc: true
-    mainfont: "Georgia"
+    mainfont: Georgia
     lightbox: true
 bibliography: general-info.bib
 draft: false
@@ -187,7 +187,7 @@ The first generation of GPT came out back in 2018 [@radford2018], which was back
 
 ## Training GPT
 
-The first version of GPT is trained two steps: 1) unsupervised next-word prediction, 2) supervised fine-tuning. The first step is pretty standard so lets not go into details. The second step involving feeding the network with the text tokens that has been labeled. The text tokens are constructed based on the task, and you can see in @fig-gpt1-struct how some of the tasks were formulated. The GPT, receiving the input, would not only have to output tokens, but also predict the task that is labeled.
+The first version of GPT is trained two steps: 1) unsupervised next-word prediction, 2) supervised fine-tuning. The first step is pretty standard so lets not go into details. The second step involving feeding the network with the text tokens that has been labeled. The text tokens are constructed based on the task, and you can see in @fig-gpt1-struct how some of the tasks were formulated. The GPT, receiving the input, would not only have to output tokens, but also predict the task based on the input prompt. This means that the network has an extra layer of thought process before generating the output prompts that might not only modify the output prompt style, but also a window to replace the output model with another set of weights for some very specific tasks, such as code writing.
 
 ## Modifications in GPT-2
 

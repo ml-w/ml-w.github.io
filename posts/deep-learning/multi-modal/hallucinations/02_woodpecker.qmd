@@ -117,4 +117,6 @@ VQA here is already pre-trained, therefore you need to find a VQA model that is 
 
 ------------------------------------------------------------------------
 
+# mPLUG-OWL2
+
 (To be continue)
