@@ -1,0 +1,194 @@
+---
+title: "LVM - General Info"
+author: "MLun Wong"
+date: "2024-02-04"
+categories: [transformer, bert, NLP, review, lvm]
+format:
+  html:
+    toc: true
+    mainfont: "Georgia"
+    lightbox: true
+bibliography: general-info.bib
+draft: false
+---
+
+# Background
+
+Language-visual model (LVM) has quite a general scope covering any model that deal with both language and visual information, but let's not complicate things and only look at the possible combination of outputs:
+
+-   Text to image ➠ E.g., Stable diffusion
+-   Image to text ➠ E.g., Imaging captioning
+-   ~~Text to Image + text~~
+-   ~~Image to Image + text~~
+-   Text + Image to Text ➠ E.g., Radiology reporting.
+-   Text + Image to Image ➠ E.g., Stable diffusion, Animation, Style changes.
+
+::: {.callout-note appearance="simple"}
+Two combinations was crossed out just because no compelling examples came to my mind, but I am sure there's some applications out there that fits the profile.
+:::
+
+To understand how these applications were achieved, some milestone modules needs to be properly introduced, which is the purpose of this post.
+
+------------------------------------------------------------------------
+
+# Transformer
+
+Transformer is probably one of the most important milestone in modern language AI models, proposed by scientist from Google [@vaswani2017]. It can be modulised into an encoder and a decoder, which is essentially stacks of linear units with non-linear activations. Now there's tons of tutorials out there covering transformer, so I am not going to repeat all of the details. Instead, I plan only to cover a few items and point you to one that I think is pretty good [here](https://www.youtube.com/watch?v=4Bdc55j80l8).
+
+::: column-margin
+![Architecture of transformer extracted from [@vaswani2017].](images/transformer-struct.png){#fig-transformer}
+:::
+
+## Self attention mechanism
+
+At the heart of the Transformer is the **self-attention mechanism**, which computes attention scores to capture the relevance of all other tokens in the input sequence for each token. Considering the sentence "*I am a boy*," the Transformer doesn't simply assign weights to "*I*" related to "*am*", "*a*", and "*boy*". Instead, it evaluates how each word should attend to every other word in the sentence, allowing the model to contextualize each word, such as understanding "*boy*" in relation to "". This contextualization is essential for nuanced language understanding.
+
+## Multi-head attention
+
+Attention heads in transformer refers to the attention mapping mentioned about. Multi-head attention simply means there are multiple mappings being constructed to attend to different "relevance" between the tokens. In my previous example, "*I*" and "*boy*" would have different semantic connection as "*I*" and "*am*", and therefore result in a different attention weight.
+
+### Self-attention (SA)
+
+Self-attention is a mechanism that allows each position in the input sequence to attend to all positions within the same sequence. In transformer blocks, this is used to compute a representation of the sequence where the contribution of other tokens to the representation of each token is determined by the attention scores.
+
+The process involves three sets of learned weights: query $Q$, key $K$, and value $V$ matrices. For a given token, the model computes its query and then calculates attention scores by taking the dot product of this query with the keys of all tokens in the sequence, including itself. These scores are then normalized using a softmax function, and this distribution is used to create a weighted sum of the values, resulting in the final self-attended output for that token.
+
+Self-attention allows the model to integrate information from the entire sequence, making it powerful for tasks such as language modeling, where the relevance of context can vary greatly based on the content.
+
+::: {.callout-tip collapse="true"}
+## Technical details
+
+Here are some additional details of $Q,V,K$ vectors in SA module
+
+$$ \begin{array}{cll} Q\in\mathbb{R}^{d_k}: &\text{query, to match others} & =\mathscr{U}\cdot W^q \\ K\in\mathbb{R}^{d_k}: &\text{key, to be matched} &= \mathscr{U}\cdot W^k \\ V\in\mathbb{R}^{d_v}: & \text{values, information to be extracted} & =\mathscr{U}\cdot W^v \end{array} $$
+
+Attention matrices are then formed by:
+
+$$ \alpha=\frac{Q^TK}{\sqrt{d}} $$
+
+where d is the dim of $Q$ and $K$. Self-attention $\hat{\alpha}$ is obtained from the soft-max of this attention matrices:
+
+$$ \hat{\alpha}_{m,i}=\frac{\exp(\alpha_{m,i})}{\sum_j \exp(\alpha_{m,j})} $$
+
+where $m$ denotes the row index and $i$ denotes the column index. This attention is a coefficient prepared for $V$. The output sequence is then $B=\hat{\alpha}V^T$, or
+
+$$
+B=\text{Attention}(Q, K, V)=V\cdot \text{softmax}\left(\frac{Q^TK}{\sqrt{d_k}} \right)
+$$
+
+#### Multi-head SA
+
+For multi-head, it just mean there's more than one attention mapper such that the hidden layer is obtained by:
+
+$$
+\begin{aligned}
+\text{Multi-head}(Q, K, V)=\text{concat}(H_1, \dots,H_h)W^O \\
+\text{where }H_i =\text{Attention}(QW^q_i,KW^k_i, VW^vi) \\
+\end{aligned}
+$$
+
+where there's an additional dimension $d_k$ for number of attention heads.
+
+$$
+\begin{align*}
+W^q_i &\in \mathbb{R}^{d_{model}\times d_k} \\
+W^k_i &\in \mathbb{R}^{d_{model}\times d_k} \\
+W^v_i &\in \mathbb{R}^{d_{model}\times d_v} \\
+W^O &\in \mathbb{R}^{hd_{model}\times d_v}
+\end{align*}
+$$
+:::
+
+### Cross-attention (CA)
+
+Cross-attention is used when there are two different sequences, and the goal is to let one sequence attend to the other. This mechanism is central to the encoder-decoder structure in transformer models, where the decoder attends to the output of the encoder.
+
+Similar to self-attention, cross-attention also uses $(Q, K, V)$ However, in this case, $Q$ come from one sequence (typically the decoder), and $(K, V)$ come from another (typically from the encoder). The decoder's queries are used to attend to the encoder's keys and values, allowing the decoder to focus on relevant parts of the input sequence when generating each token of the output sequence.
+
+Cross-attention is particularly useful in **machine translation**, where the model needs to consider information from an input sentence when constructing a sentence in the target language. It is also useful in mult-modal situation where you want different encoded sequences attend to each other int the low-dimensional latent space.
+
+![Example of cross-attention layer extract from [@li2021] (\[[CC BY-NC-SA](http://creativecommons.org/licenses/by-nc-sa/4.0/)\]). Notice how they use cross-attention to embed both textual and visual information.](images/ca-struct-example.png){#fig-cross-attension width="652"}
+
+## Postion encoding
+
+One interesting details about transformer is it uses the sine and cosine function for position encoding. In particular, the position of tokens in the vector is encoded by adding a fix sequence obtained by:
+
+$$
+\begin{align}
+\operatorname{PE}_{\tt pos, 2i} &= \sin(\text{pos} / 10000^{2i/d_{\tt model}}) \\
+\operatorname{PE}_{\tt pos, 2i+1} &=\cos(\text{pos} / 10000^{2i/d_{\tt model}})  
+\end{align}
+$$
+
+where $\tt pos$ is the sequence position of the token, $i$ is the channel, $d_{\tt model}$ is the total dimension of the embedding space. The position information is embedded just by adding the resultant vector from the equation above to the input vector (which is already embedded by the input embedding step).
+
+Citing the authors explaination:
+
+> We chose this function because we hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset $k, PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$
+
+This is quite interesting as the more intuitive way would just be adding equally spaced embeddings, but the author mentioned this choice is an empirical decision that returned better results. They did not really went into detail why this is the case, but I think this [post online](https://machinelearningmastery.com/a-gentle-introduction-to-positional-encoding-in-transformer-models-part-1/) summarized it pretty comprehensibly.
+
+# BERT
+
+Bidirectional Encoder Representations from Transformers, or BERT, is quite influence in the development of language models. It is once again come from Google scientist, that is an extension of transformer [@devlin2018]. It is essentially the encoder segment of the Transformer, with slight variations in hyperparameters, such as the number of multi-head attention. Also the position encoding is accompanied with segment encoding to give the AI somewhat "formats" of input, enabling also the grasp of phrases instead of just words. True to its name, BERT functions as an encoder, translating text into a latent semantic space—a crucial step for subsequent processing.
+
+![Summary of training BERT to understand language. Extracted from [@devlin2018]](images/bert-struct.png){#fig-bert}
+
+## Purpose of BERT
+
+BERT plays the role as the "dictionary" for downstream applications by providing an effective way to learn representations of corpus from a bunch of unlabeled text, i.e., allowing the computer to understand human language. The original author showed that by pre-training BERT on a corpus, and then fine-tunning it to do various downstream tasks (by adding an output layer), BERT showed state-of-the-art performance at the time of their publication, which is quite astonishing taking the number of trainable parameters into consideration.
+
+```{mermaid}
+%%| fig-cap: Simplified workflow to train  BERT for customized tasks
+%%| label: fig-bert-usage
+
+flowchart LR
+  data[(Big un-labelled <br>text dataset)]
+  subgraph B[BERT model]
+    direction LR
+    BERT --> |Attached to|ol[Output Layer]
+  end
+    data --> |Pre-train|BERT
+  data2[(Labelled targets)] --> |Fine-tune|B
+  %% data2 --> |fine-tune|BERT & ol
+```
+
+## Application from BERT
+
+After BERT is pre-trained, it can be quickly adapted to a certain task which uses the pre-trained corpus by attaching BERT to an output layer. For example, BERT can be configured to extract an answer of a question from a paragraph of text (Question answering model) by adding an output layer that convert the transformer outputs into 2-channel logits representing probability as starting index, and ending index.
+
+Taking `Huggingface`'s example implementation of BERT QA model `transformers.BertForQuestionAnswering`
+
+``` {.python code-line-numbers="|3|11-12"}
+BertForQuestionAnswering(
+  (bert): BertModel(                                              # <1>
+    (embeddings): BertEmbeddings(...)
+    (encoder): BertEncoder(
+      (layer): ModuleList(
+        (0-11): 12 x BertLayer(...)
+        )
+      )
+    )
+  )
+  (qa_outputs): Linear(in_features=768, out_features=2, bias=True) # <2>
+)
+```
+
+1.  BERT model pretrained with any corpus
+2.  Output layer customized for different applications
+
+# GPT-2
+
+GPT is a generative transformer which throws out text on input.
+
+The first generation of GPT came out back in 2018 [@radford2018], which was back than also a model based on transformer. The model was developed by scientists in OpenAI, and it was essentially a transformer decoder with multiple layers of multi-head attention. The novelty lies on the way they formulate their output by also adding the context of "task" into the equation. Their rationale being that, same input entails different output if the implicit task is different.
+
+![Outline of first generation of GPT structure and principles. See how the input text is being used not just for text generation, but also task classification. The authors trained the input encoder to Image is extracted from [@radford2018].](images/GPT-1.png){#fig-gpt1-struct}
+
+## Training GPT
+
+The first version of GPT is trained two steps: 1) unsupervised next-word prediction, 2) supervised fine-tuning. The first step is pretty standard so lets not go into details. The second step involving feeding the network with the text tokens that has been labeled. The text tokens are constructed based on the task, and you can see in @fig-gpt1-struct how some of the tasks were formulated. The GPT, receiving the input, would not only have to output tokens, but also predict the task that is labeled.
+
+## Modifications in GPT-2
+
+Open-AI was not being incredibly transparent for the modifications they made in GPT-2. Based on the paper they released [@radford2019], the only structural changes are model size and they moved the layer norm layer to the inputs of each sub-block, instead of after masked multi-head attention, and finally they prune the pre-train data used. They also trained with different sizes to observe the performance changes.

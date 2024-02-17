@@ -1,0 +1,101 @@
+---
+title: "LVM - BLIP-1 & BLIP-2"
+author: "MLun Wong"
+date: "2024-02-10"
+categories: [lvm, blip, review, NLP]
+format:
+  html:
+    toc: true
+    mainfont: "Georgia"
+    lightbox: true
+bibliography: general-info.bib
+draft: false
+---
+
+::: callout-caution
+## Under construction
+
+This page is under construction.
+:::
+
+# Background
+
+Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models (BLIP) is a method devised by Junnan Li from SalesForce Research [@li2022], which purpose is similar to CLIP [@radford2021], is to unify vision- and language-encoder understanding and enable downstream tasks.
+
+Different to CLIP, the first BLIP actually proposed a model architecture they called Multi-modal mixture Encoder-Decoder (MED). Apart from image-text contrastive learning and image-text matching in CLIP, BLIP introduces image-conditioned language modeling. Furthermore, they also proposed a step to filter noise in training data called captioning and filtering.
+
+The underlying motivation is to establish a framework with both the capability for understanding image (image-text retrieval) and text generation (image captioning).
+
+# BLIP-1
+
+There are three key components in the first BLIP:
+
+1.  Unimodal encoders
+2.  Image-grounded text encoder
+3.  Image-grounded text decoder
+
+This is oulined in (@fig-blip-1).
+
+![The outline of first version of BLIP extracted from [@li2022] ([CC-BY](https://creativecommons.org/licenses/by/4.0/))](images/blip-1-struct.png){#fig-blip-1}
+
+## Components
+
+### Unimodal encoders {#unimodal-encoders}
+
+This refers to the typical vision encoder and text encoder pair, which are trained together using the image-text contrastive loss like in CLIP. In BLIP's paper, they use ViT as vision-encoder and BERT as text-encoder. For this part of the text they use `[CLS]` token to signify its begining.
+
+### Image-ground text encoder
+
+CLIP-like training in [unimodal encoders](#unimodal-encoders) aims to alight the vision-encoded space to text-encoded space. However, the encoding is not always capturing the desirable information because this desired information could be versatile depending on the context of the task at hand.
+
+Therefore, the image-grounded text encoder is designed to create a representation for understanding-based tasks such as image-text retrieval. Here's how it functions:
+
+-   A task-specific token (`[Encode]`) is added to text input, the output embedding of which serves as the image-text representation.
+-   It is trained with an Image-Text Matching (ITM) loss to determine if an image-text pair matches (positive) or not (negative).
+-   The purpose of the image-grounded text encoder is to enable the model to understand and reason about the content when given an image and corresponding text.
+
+### Image-ground text decoder
+
+The image-grounded text decoder focuses on the generation of text based on visual inputs:
+
+-   It employs causal self-attention to ensure that the generated text follows a coherent sequence corresponding to the image content.
+-   The decoder is trained with a Language Modeling (LM) loss to maximize the likelihood of generating a caption that accurately describes the given image.
+-   The rationale behind the image-grounded text decoder is to allow the model to generate natural language descriptions for images, effectively learning to "speak" about what it "sees".
+
+## Cap Filt
+
+Web crawling results in noisy image, therefore the authors proposed the Captioning and Filtering to filter away noisy (image, text) pairs obtained from the internet. The basic principle is to use a *captioner* module to caption web images, and a *filter* module to remove noisy image-text pairs.
+
+![Concept of Caption and Filter proposed in [@li2022]. ([CC-BY](https://creativecommons.org/licenses/by/4.0/))](images/cap-filt.png){#fig-cap-filt width="50%"}
+
+The captioned and filters are initialized by the pre-trained model and then fine-tuned on small-scale human-annotated dataset to perform both captioning and filtering.
+
+## Results
+
+BLIP-1 did present state-of-the-art results in most of the tasks, but it was not really out-performing other modules by too a lot in these regular tasks. However, a notable point is it's performance in zero-shot text-to-video retrieval, which out-perform other methods including CLIP by a big margin. This retrieval was done by uniformly sample 8 and 16 images from each video for retrieval and captioning task, respectively. Although the author did not further analyze possible insights into this, I believe this has to do with the ability to tell noise from context through CapFilt, which would be especially important in grasping the context of a video as the chance to capture relevant context from uniformly sampled frames ain't that high.
+
+![BLIP-1 showing significant improvements in text-to-video retreival (i.e., seaching for most relevant video with text key words)](images/tbl-blip-1-res.png){#tbl-blip-video .center width="60%"}
+
+------------------------------------------------------------------------
+
+# BLIP-2
+
+Li et al. later improved BLIP and published another pre-print on Arxiv proposing BLIP-2 [@li2023]. BLIP-2 central ideal is still the same as BLIP-1, but they regroup the idea to propose a new module called the **Q-Former** (Query-former). They also have not mentioned anything further about CapFilt, presumably it was not included in BLIP-2.
+
+The significance in Q-former lies in its ability to bridge between a frozen vision-encoder and frozen LLM. Essentially, it means you can connect any pre-trained image-encoder and LLM without re-training them, but only training a Q-former module, which has way less number of parameters than a regular LLM.
+
+## Q-Former
+
+![Structure of Q-Former extracted from [@li2023]. The Q-former consist of two transformer submodules that shares the same self-attention layers (orange layer). The first transformer interacts with image encoder, whereas the second transformer can act as both a text encoder and decoder, depending on task context. The outputs of these two transformer are not connected during inference.](images/q-former-struct.png){#fig-q-former-struct}
+
+The structure of Q-Former is cropped from the original paper and placed above [@fig-q-former-struct].
+
+### Image transformer module
+
+This module is responsible for "querying" the encoded image for the extraction of visual information with consideration to the input text input into the [Text transformer module].
+
+A key novelty here is there's a set of learnable **query embedding** for **EACH** of the transformer blocks of this module. They interacts with the text input through transformer's self-attention (SA) layer connection, and interact with the encoded image through cross-attention layer.
+
+### Text transformer module
+
+This module takes in the input prompt, there's no CA layer

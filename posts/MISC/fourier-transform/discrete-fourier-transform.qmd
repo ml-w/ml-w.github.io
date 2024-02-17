@@ -3,11 +3,12 @@ title: "Discrete Fourier Transform"
 author: "MLun Wong"
 date: "2024-01-11"
 categories: [DFT,python,code, signal]
+format:
+    html:
+        mainfont: "Georgia"
 ---
 
-```{=html}
-<div class="serif-content">
-```
+
 ## Sampling From Continuous Function
 
 For every continuous function $f(x)$, the sampling process can be expressed as:
@@ -48,7 +49,7 @@ $$ x\_{n} = x\_{2n'} = \frac{1}{N} \sum\_{n'=0}^{N-1} X_k e^{i 2 \pi  k \cdot 2
 
 By the same logic, the k-th bin corresponds to $\frac{2k}{N}$. Notice how the increase in x-space sampling rate reduce the k-space resolution while increase the k-space range. This is actually very logical, increasing your sampling rate allows one to discovers higher frequencies component. Imaging you sample at 1Hz, you will never know there are a 5Hz component in the sampling target.
 
-![](images/j3ou6bl2.bmp)
+![](images/j3ou6bl2.bmp){#fig-sampling-example}
 
 We therefore draw the conclusion about x-space vs k-space resolution conversion:
 
@@ -62,7 +63,7 @@ Knowing how to calculate the resolution, the next logical question is what is th
 
 Remember I mentioned **Aliasing Artifacts** mentioned in previous section?
 
-![](images/czybz8xp.bmp)
+![](images/czybz8xp.bmp){#fig-aliasing-example}
 
 This is what happens if you don't sample enough data points, the recovered signal is flawed.
 
@@ -72,6 +73,3 @@ Nyquist Theory states that in order to prevent this, knowing that the highest fr
 
 $$ F_s > \frac{1}{2 B} \tag{3.1}$$
 
-```{=html}
-</div>
-```

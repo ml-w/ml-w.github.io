@@ -1,0 +1,120 @@
+---
+title: "[Review] Reducing hallucination: Woodpecker"
+author: "MLun Wong"
+date: "2024-02-04"
+categories: [multi-modal, MMLLM, hallucination, review]
+format:
+  html:
+    toc: true
+    mainfont: "Georgia"
+reference-location: margin
+citation-location: margin
+draft: false
+bibliography: "hallucination.bib"
+---
+
+# Woodpecker
+
+A group from Tecent proposed to use 5-step prompt-based technique to reduce hallucination [@yin2023]. This method does not require any fine-tunning or re-training as it's only a prompt engineering technique. It involves using carefully designed few-shot prompts to augment the original output of by the MMLLM. Here's an outline of their method @fig-woodpecker-flowchart.
+
+```{mermaid}
+%%| layout-align: center
+%%| fig-cap: Flowchart outlinging the Woodpecker method.
+%%| label: fig-woodpecker-flowchart
+
+flowchart TD
+    input(Original MLLM output) --> s1[Step 1: Key Concept Extraction] 
+    s1 --> s2[Step 2: Question formulation]
+    s2 --> s3[Step 3: Visual knowledge validation]
+    s3 --> s4[Step 4: Visual claim generation]
+    s3 --> |Bounding Box Info|image(Annotate on Image)
+    s4 --> s5[Step 5: Hallucination correction]
+    s5 --> output(Output prompt)
+```
+
+Their default base model was [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl), and their online demo was down as of the date I write this post. But I did have had a chance to play with it. It gives pretty intuitive results and the model make much more sense than the original `mplug-owl-llama-7b` . I am quite surprise to see the model is able to give pretty accurate bounding box without fine-tunning
+
+## Summary
+
+![Summary workflow of Woodpecker method extracted from the original paper. Note that the bounding box is drawn from the prompt output by visual knowledge validation step.](images/woodpecker-workflow.png){#fig-woodpecker-summary}
+
+## Prompt template
+
+The authors provides three prompt templates corresponding to their 5-step workflow. Here's a recap
+
+### Step1: Key concept extraction
+
+The target of this step is to extract the entities from the MMLLM output of concern for further verification.
+
+``` markdown
+# System message
+You are a language assistant that helps to extract information from given sentences
+
+# Prompt
+Given a sentence, extract the existent entities within the sentence for me. Extract the common objects and summarize them as general categories without repetition, merge essentially similar objects.
+Avoid extracting abstract or non-specific entities. Only extract concrete, certainly existent objects that fall in general categories and are described in a certain tone in the sentence. Extract entity in the singular form. 
+Output all the extracted types of items in one line and separate each object type with a period. If there is nothing to output, then output a single “None”.
+
+# Examples:
+{In-context Examples}
+
+# Sentence: 
+{Input Sentence}
+
+Output:
+```
+
+::: callout-note
+The authors did not give the specific details of the `{In-context Examples}` they noted in all of their templates on their arxiv publication, but they can be found in their github repository \[[link](https://github.com/BradyFU/Woodpecker/blob/main/models/entity_extractor.py)\].
+:::
+
+### Step 2: Question formulation
+
+Given the key concepts extracted from the last step, the authors designed a template to instruct the original model to expand the original questions. This step increase the reasoning by adding intermediate points before arriving to a conclusion.
+
+``` markdown
+# System message
+You are a language assistant that helps to extract information from given sentences
+
+# Prompt
+Given a sentence, extract the existent entities within the sentence for me.
+Given a sentence and some entities connected by periods, you are required to ask some relevant questions about the
+specified entities involved in the sentence, so that the questions can help to verify the factuality of the sentence.
+Questions may involve basic attributes such as colors and actions mentioned in the sentence. Do not ask questions involving object counts or the existence of objects.
+When asking questions about attributes, try to ask simple questions that only involve one entity.
+Ask questions that can be easily decided visually. Do not ask questions that require complex reasoning.
+Do not ask semantically similar questions. Do not ask questions only about scenes or places.
+Use “where” type questions to query the position information of the involved entities.
+Do not ask questions about uncertain or conjecture parts of the sentence, for example, the parts described with “maybe” or “likely”, etc.
+It is no need to cover all the specified entities. If there is no question to ask, simply output a “None”.
+When asking questions, do not assume the claims in the description as true in advance. Only ask questions relevant to the information in the sentence.
+Only ask questions about common, specific, and concrete entities. The entities involved in the questions are limited to the range within the given entities.
+Output only one question in each line. For each line, first output the question, then a single “&”, and finally entities involved in the question, still connected by periods if multiple entities are invovled.
+
+# Examples:
+{In context examples}
+
+# Sentence:
+{Input sentence}
+
+# Entities:
+{Input entities}
+
+Questions:
+```
+
+::: callout-note
+Again their `{In-context examples}` can be found on their github. \[[link](https://github.com/BradyFU/Woodpecker/blob/main/models/questioner.py)\]
+:::
+
+### Step 3: Visual knowledge validation
+
+In this step, the authors employed a pre-trained VQA (Visual question answering) model, which they found to produce fewer hallucination, to answer the question. This step also produces the bounding box that they used to label the items on the image.
+
+::: callout-tip
+VQA here is already pre-trained, therefore you need to find a VQA model that is most relevant with the problem at hand. I.e., its not effective to train a medical imaging MMLVM model to have a VQA model trained on regular natural images. For Woodpecker to work, you have to also have a VQA model that is trained using medical imaging data.
+:::
+
+---
+
+(To be continue)

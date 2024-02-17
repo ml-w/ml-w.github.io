@@ -126,3 +126,19 @@ div.csl-entry {
 .quarto-float-tbl {
   text-align:center;
 }
+
+.quarto-float-caption {
+  font-size: 10pt;
+  line-height: 1.15em;
+  text-align: center;
+}
+
+/* Lightbox caption background */
+div.gdesc-inner {
+  backdrop-filter: blur(10px);
+}
+
+div.gdesc-inner .gslide-desc {
+  background-color: unset !important;
+  backdrop-filter: unset;
+}

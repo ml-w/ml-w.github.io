@@ -1,0 +1,74 @@
+---
+title: "Narrative review - Reducing hallucination in MMLLM"
+author: "MLun Wong"
+date: "2024-02-04"
+categories: [multi-modal, MMLLM, hallucination]
+format:
+  html:
+    toc: true
+    mainfont: "Georgia"
+reference-location: margin
+citation-location: margin
+draft: false
+bibliography: "hallucination.bib"
+# jupyter: conda-env-data_analysis-py
+---
+
+# Background
+
+Hallucination refers to when a multi-modal generative models hallucinates about the input and generate text with fake description that is not associated with the input image (@fig-hallucination-eg).
+
+::: {#fig-hallucination-eg}
+![](images/hallucination.png){.fig-background height="400"}
+
+Example of hallucination by a multi-modal model. Extracted from [@yin2023].
+:::
+
+These hallucination is more common in smaller models with less than 100B parameters, and is currently a huge challenge because training these model requires cooperate-level resources. As an individual researcher, these sort of resources is not that easy to obtain. Therefore, understanding hallucination is essential to decentralize the technology advancement of multi-modal language models (MMLM). This post is a narrative review looking at current studies that are working towards solving hallucination in MMLLM. I referenced the [awesome-mmllmm list](https://github.com/Atomic-man007/Awesome_Multimodel_LLM) for some noted studies.
+
+## Cause of hallucination
+
+While hallucination is a well-known phenomenon, our understanding of its root cause is limited. Most believe this is merely a limitation of the lack of trainable parameters and can be solved by increasing model size. This is true to some extent with evidence suggesting LLM with \>100B parameters showing a much better performance and accuracy in reasoning when compared to smaller version of itself. However, LLM as big as GPT-4V with \> 175B parameters still hallucinates, so there must be more to this issue.
+
+### Gradient-based optimization
+
+One interesting study I came across on Arxiv suggests hallucination is a result of the gradient-based optimization process [@yao2023]. Essentially Yao et al. constructed rogue prompts to induce the LLM to give a designated fabricated hallucination output by optimizing the token loss of the model output with designated hallucination (without touching model parameters, just swapping input prompt tokens). They found that tokens forming text prompt will still get the designated hallucination for a 7B model (`Viculna-7B`). E.g:
+
+``` {#exm-gd .markdown}
+# Input
+/] The name enumer Mission capital city of fol ([Yes [- nazw engl Londres britannique Peru Franvera Sorry}{—(?
+
+# Output
+The name of the capital city of France is London.
+```
+
+They conclude that hallucination is a result embedded into gradient-optimization method for training LLM.
+
+```{=html}
+<details><summary><b>Advanced discussion</b></summary>
+```
+I do found their conclusion to be a bit hasted, and I frankly does not fully agree to it, but I can see the logic behind their argument. They seems to believe hallucinations are attributed to the encoder mechanisms within LLMs, which are fine-tuned through an imperfect loss function. This imperfectness can be exploited to generate prompts that, despite appearing illogical to humans, are perceived as normal by the LLM and produces hallucination output. Although they did not mentioned it in their paper, I deduced they are theorizing that one of the causes of hallucination is the proximity of semantically disparate tokens in the embedding space.
+
+I have also tried their OoD prompts in larger models including Llama-70B, it seems to perceive many of their OoD prompts from their Table 6. to be harmful language and refuse to answer.
+
+Also, I noticed a pattern where fragment of word in their OoD are actually related to the output hallucination in a somewhat flawed but not entirely illogical manner. For example, the prompt: `!?? wonderful!! Add better!!altro!!emi . Parisian` always result in response related to Paris. And it's obviously attributed to "Parisian", despite this is not a commonly used term.
+
+![Screen capture of response by Llama-70B. Although I used a model with 10x the original parameters of the model tested by the authors, I believe the OoD prompt does has logical connection with the output of the model.](images/llama-response-1.png){#fig-llama-response-1}
+
+</details>
+
+### Low-resources situations
+
+[@guerreiro2023] reports that LLM hallucinates more under low-resources situations. In other words, they pretend to know and answer with confident even though they don't. This is quite believable but is also quite obvious to people who played with a LLM chat bot for a while. I also think the few-shot, one-shot and zero-shot configuration is a testimony thatLLM performs better with more resources. Now, the lying behavior is notorious, the real question is "why" but this paper didn't really give us an explanation.
+
+The authors also showed that hallucination, in particular "Toxic" (e.g., hate speech) hallucination, occurs more frequently when the LLM is translating out of English from language with less training data.
+
+### Temperature
+
+I find it shocking that the literature does not offer much information about the association between temperature and hallucination in LLM. It seems there again not really a solid conclusion, but I read on GDELT blog \[[link](https://blog.gdeltproject.org/understanding-hallucination-in-llms-a-brief-introduction/)\] that setting to a temperature to 0, meaning always select the highest probability token, will result in more hallucination by removing the model's flexibility to escape high-probability low-relevance phrasal assemblies (i.e., frequently used term that are unrelated to the discussed subject matter). I cannot really say I fully believe this, but the author, who remained annonymus, mentioned that many AI firm suggest that setting temperature to 0 will eliminate hallucination, I stand firmly with him/her that this is not the case.
+
+------------------------------------------------------------------------
+
+# Reviewed papers
+
+-   Woodpecker: Hallucination Correction for Multimodal Large Language Models [Post](./02_woodpecker.qmd) [@yin2023]

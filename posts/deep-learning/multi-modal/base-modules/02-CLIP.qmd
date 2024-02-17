@@ -1,0 +1,83 @@
+---
+title: "LVM - CLIP"
+author: "MLun Wong"
+date: "2024-02-09"
+categories: [lvm, clip, review, NLP]
+format:
+  html:
+    toc: true
+    mainfont: "Georgia"
+    lightbox: true
+bibliography: general-info.bib
+draft: false
+---
+
+# Background
+
+CLIP stands for Contrastive Language-Image Pre-training, and it is brought to us again by Alec Radford's group in OpenAI [@radford2021]. It's no overstatement to say this is a hallmark of modern language-vision model, but credits should also be given to the original work that outline contrastive learning ConVIRT by [@zhang2020]. To highlight some of the key differences, ConVIRT in [@zhang2020] used CNN for encoding, whereas Radford used vision transformer (ViT) and ResNet as image encoders.
+
+Now despite many people, including OpenAI themselves, keep referring CLIP as a some sort of a trained model, it is important to recognize CLIP is not really a module or architecture, but a framework [@fig-clip-struct] to pre-train both image and text encoder such that their latent spaces align with each other, these sort of pre-train methods are generally referred to as Vision-Language Pre-training (VLP). CLIP does not restrict the architecture of vision- and language-encoder, and it does introduce structual connection between these two entities.
+
+CLIP has since been used for many multi-modal tasks, such as stable diffusion, because of its remarkable capacity to capture the association vision information with text.
+
+![Overview of CLIP method extracted from [@radford2021].](images/clip-struct.png){#fig-clip-struct}
+
+::: callout-note
+Regardless of what I said above, I have to admit, nowadays, the term "CLIP" has become a convenient label for referring to both the training process and the resulting model as a whole. Somewhat confusing IMO, but that's how language works. Here in this post, let's stick to the context of the training framework.
+:::
+
+# Training with CLIP
+
+Referencing @fig-clip-struct. The first step is contrastive learning, which is considered weakly supervised. A massive amount of semi-labeled data are collected from the internet for this step, in fact Raford et al. created their own dataset with 400M (image, text) pairs.
+
+## Contrastive learning
+
+The core of contrastive learning is the notion of learning by comparison. By contrasting positive pairs (related or similar data points) against negative pairs (unrelated or dissimilar data points), models can develop an understanding of the underlying structure and semantics of the data without the need for explicit annotations. This is accomplished through a contrastive loss function, which encourages the model to minimize the distance between representations of positive pairs while maximizing the distance between negative pairs.
+
+### Noise contrastive estimation (NCE) loss
+
+This loss function advocated to be used with CLIP is the Noice contrastive estimation (InfoNCE):
+
+$$ L({\bf U\rightarrow V}) = -\log\left\{ \frac{\exp \left[\operatorname{cosim}(u, v) / τ \right]} {\sum_{k=1}^N \exp[\operatorname{cosim}(u, v_{neg}) / τ] }\right\} $$
+
+where:
+
+-   $N$ is the number of samples
+-   $u$ is the embedding vector of the image,
+-   $v$ is the embedding vector of the corresponding positive text,
+-   $v_{neg}$ are the embedding vectors of the negative texts,
+-   $\text{cosim}(u, v)$ is the cosine similarity between the image and text embeddings, i.e., $v^Tu / \Vert v \Vert \Vert u \Vert$
+-   $\tau$ is a temperature parameter that controls the separation of the scores. In @radford2021, this can be a learnable parameter as well.
+
+See how this encourages the factor to be large (i.e., large distance between negative pairs), and the denominator to be small (i.e., small distance between positive pairs).
+
+In both CLIP and ConVIRT, NCE is commonly used in pair:
+
+$$ \mathscr{L}({\bf U, V}) = [\lambda L({\bf U \rightarrow V}) + (1-\lambda)\cdot L({\bf V \rightarrow U})]$$
+
+where $\lambda$ is a scalar weight to balance the importance of $\bf U$ and $\bf V$ as ground-truth. This loss is similar to co-registering the two encoded space, with $\lambda$ dictating which space moves faster.
+
+::: callout-tip
+In Raford et al.'s paper, they mentioned they used 592 and 256 V100 GPUs, and spent \> 10 days to train the largest ResNet and largest ViT, respectively [@radford2021]. Whereas in [@zhang2020], it only took them 3 days on a Titan RTX.
+:::
+
+# Zero-shot testing
+
+The pre-trained model is then put to test as a zero-shot classifier, which are step (2) and (3) in @fig-clip-struct. The authors computed a total of 32,768, and generate template sentence `a photo of {object}` for each of these objects, encoding them and compare with the zero-shot result of the image encoder using cosine similarity.
+
+## Notable results
+
+### classifier test results
+
+![Zero-shot classifying result extracted from [@radford2021]. Notably, its doing bad at CLEVR, which is a counting challenge dataset, which is already tackled years ago.](images/clip-zero-shot-tbl.png){#tbl-zero-shot-res}
+
+Its notable CLEVR is the only dataset where the trained CLIP-ResNet showed a significant drop at RN50x4 and RN50x16. This dataset contains mainly counting challenges. This might suggest CLIP does not have very strong reasoning capability.
+
+![Zero-shot classifying results extracted from [@radford2021].](images/clip-zero-shot-result.png){#fig-clip-results}
+
+Based on how these results were presented, I would say Radford et al. might have tested with dataset specific classes only when evaluating the zero-shot performance. For example, in @tbl-zero-shot-res, the number of classes tested for each dataset is different, but far from the claimed 32,768 classes. This might overstate the zero-shot classification performance because the image encoder was not put to test against cross dataset image-text pairs, but is only selected within the possible classes in a a dataset.
+
+# Summary
+
+-   CLIP is a framework used to train simultaneously an imaging encoder and a text encoder, aiming to align their latent representation for further downstream application.
+-   CLIP trained encoders can be used for further downstream tasks by freezing the two encoders and training downstream network that work on the encoded features.

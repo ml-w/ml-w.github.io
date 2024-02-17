@@ -2,15 +2,22 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/medial-imaging/intensity-normalization-toc.html",
-      "/posts/fourier-transform/discrete-fourier-transform.html",
-      "/posts/programming/torch/torchio-ddp.html",
-      "/posts/IT/headless-server.html",
-      "/posts/fourier-transform/index.html",
+      "/posts/deep-learning/multi-modal/base-modules/03-BLIP.html",
+      "/posts/deep-learning/multi-modal/base-modules/02-CLIP.html",
+      "/posts/deep-learning/multi-modal/base-modules/01-general-info.html",
+      "/posts/deep-learning/multi-modal/hallucinations/01_hallucination.html",
+      "/posts/deep-learning/multi-modal/hallucinations/02_woodpecker.html",
+      "/posts/medical-imaging/intensity-normalization/01_intensity-normalization-toc.html",
+      "/posts/medical-imaging/intensity-normalization/02_intensity-normalization-mri.html",
+      "/posts/MISC/fourier-transform/discrete-fourier-transform.html",
+      "/posts/deep-learning/torch/torchio-ddp.html",
+      "/posts/MISC/headless-server.html",
+      "/posts/MISC/fourier-transform/index.html",
+      "/posts/deep-learning/explainable-ai/01-xai-npc-bn.html",
       "/posts/stochastic/monte-carlo.html",
       "/posts/stochastic/incremental-process.html",
       "/posts/stochastic/simple-random-walk.html",
-      "/posts/medial-imaging/image-orientation.html"
+      "/posts/medical-imaging/image-orientation.html"
     ]
   }
 ]
