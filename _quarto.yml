@@ -35,7 +35,6 @@ format:
     include-in-header:
       - file: assets/script_header.html
     highlight-style: ayu
-    mainfont: Consolas
     fig-align: center
     # html-math-method: katex
     # grid:
