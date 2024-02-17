@@ -37,7 +37,7 @@ format:
       - file: assets/script_header.html
     highlight-style: ayu
     fig-align: center
-    mainfont: Roboto
+    mainfont: Roboto, Georgia
     # html-math-method: katex
     # grid:
     #   sidebar-width: 0px

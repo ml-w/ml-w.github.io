@@ -6,7 +6,7 @@ categories: [lvm, clip, review, NLP]
 format:
   html:
     toc: true
-    mainfont: "Georgia"
+    mainfont: Georgia
     lightbox: true
 bibliography: general-info.bib
 draft: false

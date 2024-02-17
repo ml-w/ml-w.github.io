@@ -1,3 +1,7 @@
+:root {
+  --bs-font-sans-serif: "Georgia", "Constantia";
+}
+
 /* css styles */
 div.quarto-post {
   border-bottom: 0px;
