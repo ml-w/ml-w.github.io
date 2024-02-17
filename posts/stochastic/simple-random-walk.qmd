@@ -6,7 +6,6 @@ categories: [stochastic, python, random, notes]
 image: images/1wtoakjk.bmp
 ---
 
-::: serif-content
 # Simple Random Walk
 
 Simple random walk is the first step towards learning stochastic process. Essentially, we model a particle (of desired dimension) walking randomly as time (steps) goes by. Both the stride and the direction is random, but it follows a certain distribution.
@@ -28,6 +27,8 @@ $S_0$ represents the initial value or start point of the random walk. Also, sele
 This simulation is equivalent to plotting $S(t)$ against $t$.
 
 ```{python}
+#| cap-location: bottom
+#| fig-cap: Random walk demonstration
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -44,15 +45,16 @@ plt.plot(t, S, '-') # Plot
 
 Here's an example of a random flight of 1000 steps sampled from a process similar to above, but in 2-dimension.
 
-![](images/1wtoakjk.bmp)
+![Figure showing random walk in 2D, which is commonly referred to as random flight.](images/1wtoakjk.bmp){#fig-random-flight}
 
 # Further Discussions
 
 ## Applications
 
-In this example, we select that each elements $X(t) \in X_T, t \in T = \{0, 1, 2, \dots, n\}$ to follows $-5 \leq X(t) \leq 5 \text{ } \forall \text{ } t \in T$. It is, however, possible to introduce various other constrain to the process w.r.t. the application of your application. By modeling this distribution based on a known particle's path, one might be able to estimate its future movement. An even more sophisticated method to sample the path is to decide the distribution again based on the location of the particle and its surrounding environment. In real life, physical phenomenon, such as Brownian motion, can also be described by random walk.
+In the 1D example, we select that each elements $X(t) \in X_T, t \in T = \{0, 1, 2, \dots, n\}$ to follows $-5 \leq X(t) \leq 5 \text{ } \forall \text{ } t \in T$. It is, however, possible to introduce various other constrains w.r.t. your own application. By modeling this distribution based on a known particle's path, one might be able to model its future movement. Regratedbly, stochastic process often follows the "exponential error growth" law, meaning a small error will quickly wind up and rendering the prediction unreliable. But at least these sort of simulations give us insights into simulating a stochastic simulation, often time it might reflect accurately macroscopic properties even though in a microscopic scale, things are way off.
+
+Regardless, there are many sophisticated method to sample the path, including location dependent distribution of the particle and its surrounding environment.
 
 ## Nature of $S$ and $X_T$
 
-It is also worthwhile to note that both $S$ and $X_T=\{T_1, T_2, \dots, T_n\}$ fulfills the definition of stochastic process with the state space being different. In otherwords, stochastic process is commutative in nature.
-:::
+It is also worthwhile to note that the position $S$ and step size $X_T$ fulfills also the definition of stochastic process with the state space being different. Considering $S=\{S_0, S_0+T_1, S_0 + T_1 + T_2\}$, you might note that stochastic process is commutative in nature, such that if $T$ is stochastic, $T+X$ is also stochastic regardless of whether $X$ is stochastic or not.
